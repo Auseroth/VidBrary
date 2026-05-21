@@ -279,17 +279,29 @@
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="Theme" Style="{StaticResource FieldLabel}"/>
                     <ComboBox ItemsSource="{Binding AvailableThemes}"
-                              SelectedItem="{Binding SelectedTheme}"
-                              Background="#16213e" Foreground="White"
-                              BorderBrush="#0f3460" Padding="10,8" FontSize="13"/>
+                              SelectedItem="{Binding SelectedTheme}"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="2">
                     <TextBlock Text="Default View Mode" Style="{StaticResource FieldLabel}"/>
                     <ComboBox ItemsSource="{Binding AvailableViewModes}"
-                              SelectedItem="{Binding SelectedViewMode}"
-                              Background="#16213e" Foreground="White"
-                              BorderBrush="#0f3460" Padding="10,8" FontSize="13"/>
+                              SelectedItem="{Binding SelectedViewMode}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- TV Season Ordering -->
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Default TV Season Order" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox ItemsSource="{Binding AvailableSeasonOrderModes}"
+                              SelectedItem="{Binding SelectedSeasonOrderMode}"/>
+                    <TextBlock Text="TMDB Auto: sort by season/episode number from TMDB.  Manual: sort seasons by folder name; episodes by leading number in filename (e.g. 01 - Title.mkv)."
+                               Foreground="#6c757d" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
                 </StackPanel>
             </Grid>
 

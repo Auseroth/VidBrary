@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaCatalog.Data;
@@ -37,6 +38,27 @@ public partial class TvShowDetailViewModel(
 
     // ── Seasons ───────────────────────────────────────────────────────────────
     [ObservableProperty] private ObservableCollection<SeasonViewModel> _seasons = [];
+
+    // ── Season ordering ───────────────────────────────────────────────────────
+    /// <summary>Per-series override; null means "follow global default".</summary>
+    [ObservableProperty] private SeasonOrderMode? _seasonOrderOverride;
+
+    /// <summary>What is actually being applied right now.</summary>
+    public SeasonOrderMode EffectiveOrderMode =>
+        SeasonOrderOverride ?? settings.Current.DefaultSeasonOrderMode;
+
+    public static IReadOnlyList<SeasonOrderOption> OrderModeOptions { get; } =
+    [
+        new(null,                        "Default (global)"),
+        new(SeasonOrderMode.TmdbAuto,    "TMDB Auto"),
+        new(SeasonOrderMode.ManualFolder,"Manual (folder / filename)")
+    ];
+
+    [ObservableProperty] private SeasonOrderOption _selectedOrderMode =
+        OrderModeOptions[0];
+
+    partial void OnSelectedOrderModeChanged(SeasonOrderOption value) =>
+        _ = ApplyOrderModeAsync(value.Mode);
 
     // ── Tags ──────────────────────────────────────────────────────────────────
     [ObservableProperty] private ObservableCollection<TagViewModel> _tags = [];
@@ -97,19 +119,19 @@ public partial class TvShowDetailViewModel(
 
         if (show is null) { IsBusy = false; return; }
 
-        Title           = show.Title ?? show.FolderName;
-        OriginalTitle   = show.OriginalTitle;
-        Overview        = show.Overview ?? "No overview available.";
-        TmdbRating      = show.TmdbRating;
-        Status          = show.Status;
+        Title            = show.Title ?? show.FolderName;
+        OriginalTitle    = show.OriginalTitle;
+        Overview         = show.Overview ?? "No overview available.";
+        TmdbRating       = show.TmdbRating;
+        Status           = show.Status;
         OriginalLanguage = show.OriginalLanguage?.ToUpperInvariant();
-        PosterPath      = show.PosterPath;
-        BackdropPath    = show.BackdropPath;
-        Genres          = string.Join(" · ", show.Genres.Select(g => g.Genre.Name));
-        TotalSeasons    = show.TotalSeasons;
-        TotalEpisodes   = show.TotalEpisodes;
-        MatchStatus     = show.MatchStatus;
-        CandidateCount  = show.TmdbCandidateCount;
+        PosterPath       = show.PosterPath;
+        BackdropPath     = show.BackdropPath;
+        Genres           = string.Join(" · ", show.Genres.Select(g => g.Genre.Name));
+        TotalSeasons     = show.TotalSeasons;
+        TotalEpisodes    = show.TotalEpisodes;
+        MatchStatus      = show.MatchStatus;
+        CandidateCount   = show.TmdbCandidateCount;
 
         YearRange = (show.FirstAirYear, show.LastAirYear) switch
         {
@@ -129,9 +151,24 @@ public partial class TvShowDetailViewModel(
                     PhotoPath = c.Person.ProfilePath
                 }));
 
+        // Season ordering
+        SeasonOrderOverride = show.SeasonOrderOverride;
+        var effective = EffectiveOrderMode;
+
+        // Sync the ComboBox selection without triggering a save
+        var matchingOption = OrderModeOptions.FirstOrDefault(o => o.Mode == show.SeasonOrderOverride)
+            ?? OrderModeOptions[0];
+        // Suppress the partial changed callback during initial load
+        _selectedOrderMode = matchingOption;
+        OnPropertyChanged(nameof(SelectedOrderMode));
+
+        IEnumerable<Season> orderedSeasons = effective == SeasonOrderMode.ManualFolder
+            ? show.Seasons.OrderBy(s => System.IO.Path.GetFileName(s.DirectoryPath),
+                                   StringComparer.OrdinalIgnoreCase)
+            : show.Seasons.OrderBy(s => s.SeasonNumber);
+
         Seasons = new ObservableCollection<SeasonViewModel>(
-            show.Seasons.OrderBy(s => s.SeasonNumber)
-                        .Select(SeasonViewModel.FromSeason));
+            orderedSeasons.Select(s => SeasonViewModel.FromSeason(s, effective)));
 
         Tags = new ObservableCollection<TagViewModel>(
             show.Tags.Select(t => new TagViewModel
@@ -156,8 +193,32 @@ public partial class TvShowDetailViewModel(
         OnPropertyChanged(nameof(MatchButtonLabel));
         OnPropertyChanged(nameof(MatchButtonColor));
         OnPropertyChanged(nameof(MatchButtonEnabled));
+        OnPropertyChanged(nameof(EffectiveOrderMode));
 
         IsBusy = false;
+    }
+
+    // ── Season order ──────────────────────────────────────────────────────────
+
+    private async Task ApplyOrderModeAsync(SeasonOrderMode? mode)
+    {
+        var show = await db.TvShows.FindAsync(_showId);
+        if (show is null) return;
+
+        show.SeasonOrderOverride = mode;
+        await db.SaveChangesAsync();
+
+        SeasonOrderOverride = mode;
+        OnPropertyChanged(nameof(EffectiveOrderMode));
+
+        // Re-sort seasons in place without a full reload
+        var effective = EffectiveOrderMode;
+        var reordered = effective == SeasonOrderMode.ManualFolder
+            ? Seasons.OrderBy(s => System.IO.Path.GetFileName(s.DirectoryPath),
+                              StringComparer.OrdinalIgnoreCase).ToList()
+            : Seasons.OrderBy(s => s.SeasonNumber).ToList();
+
+        Seasons = new ObservableCollection<SeasonViewModel>(reordered);
     }
 
     // ── Season accordion ──────────────────────────────────────────────────────

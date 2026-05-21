@@ -1,11 +1,12 @@
-namespace MediaCatalog.Services.Scanner;
+﻿namespace MediaCatalog.Services.Scanner;
 
 /// <summary>
-/// Parses media filenames into a clean title and optional year.
+/// Parses media filenames into a clean title and optional year / episode info.
 /// Handles common naming patterns like:
 ///   "The Dark Knight (2008).mkv"
 ///   "Inception.2010.1080p.BluRay.mkv"
 ///   "S01E01 - Pilot.mkv"
+///   "01 - Pilot.mkv"  ← manual / Plex-style leading number
 /// </summary>
 public static class FileNameParser
 {
@@ -28,11 +29,16 @@ public static class FileNameParser
         new(@"[Ss](\d{1,2})[Ee](\d{1,2})",
             System.Text.RegularExpressions.RegexOptions.Compiled);
 
+    // Matches "01 - Title", "01. Title", "01 Title" at the start of a filename
+    private static readonly System.Text.RegularExpressions.Regex LeadingNumberRegex =
+        new(@"^(\d{1,3})\s*[-.\s]\s*",
+            System.Text.RegularExpressions.RegexOptions.Compiled);
+
     public static ParsedMediaName Parse(string fileNameWithoutExtension)
     {
         var name = fileNameWithoutExtension;
 
-        // Detect episode pattern first
+        // 1. Detect SxxExx episode pattern
         var episodeMatch = EpisodeRegex.Match(name);
         if (episodeMatch.Success)
         {
@@ -45,30 +51,32 @@ public static class FileNameParser
             };
         }
 
-        // Extract year before stripping tags (year might be surrounded by dots/brackets)
+        // 2. Detect leading-number episode pattern (e.g. "01 - Pilot")
+        var leadingMatch = LeadingNumberRegex.Match(name);
+        if (leadingMatch.Success)
+        {
+            var episodeNumber = int.Parse(leadingMatch.Groups[1].Value);
+            // Strip the leading number + separator, then clean the remainder as a title
+            var remainder = name[leadingMatch.Length..];
+            var cleanTitle = CleanupTitle(remainder);
+            return new ParsedMediaName
+            {
+                CleanTitle = string.IsNullOrWhiteSpace(cleanTitle) ? remainder : cleanTitle,
+                Episode = episodeNumber,
+                IsEpisode = true
+            };
+        }
+
+        // 3. Standard movie / show folder parsing
         int? year = null;
         var yearMatch = YearRegex.Match(name);
         if (yearMatch.Success)
+        {
             year = int.Parse(yearMatch.Value);
-
-        // Remove year and everything after it (quality tags follow the year)
-        if (yearMatch.Success)
             name = name[..yearMatch.Index];
+        }
 
-        // Strip any remaining noise tags
-        foreach (var tag in NoiseTags)
-            name = System.Text.RegularExpressions.Regex.Replace(
-                name, $@"\b{System.Text.RegularExpressions.Regex.Escape(tag)}\b", " ",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-
-        // Replace dots and underscores used as spaces
-        name = name.Replace('.', ' ').Replace('_', ' ');
-
-        // Remove leftover brackets/parentheses
-        name = System.Text.RegularExpressions.Regex.Replace(name, @"[\[\](){}]", " ");
-
-        // Collapse whitespace
-        name = System.Text.RegularExpressions.Regex.Replace(name, @"\s+", " ").Trim();
+        name = CleanupTitle(name);
 
         return new ParsedMediaName
         {
@@ -76,6 +84,19 @@ public static class FileNameParser
             Year = year,
             IsEpisode = false
         };
+    }
+
+    private static string CleanupTitle(string name)
+    {
+        foreach (var tag in NoiseTags)
+            name = System.Text.RegularExpressions.Regex.Replace(
+                name, $@"\b{System.Text.RegularExpressions.Regex.Escape(tag)}\b", " ",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        name = name.Replace('.', ' ').Replace('_', ' ');
+        name = System.Text.RegularExpressions.Regex.Replace(name, @"[\[\](){}]", " ");
+        name = System.Text.RegularExpressions.Regex.Replace(name, @"\s+", " ").Trim();
+        return name;
     }
 }
 

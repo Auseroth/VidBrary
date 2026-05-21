@@ -28,6 +28,12 @@ public class TvShow
     public int? TotalEpisodes { get; set; }
     public int? TotalSeasons { get; set; }
 
+    /// <summary>
+    /// Per-series season ordering override.
+    /// null = follow AppSettings.DefaultSeasonOrderMode.
+    /// </summary>
+    public SeasonOrderMode? SeasonOrderOverride { get; set; }
+
     // --- Relations ---
     public ICollection<Season> Seasons { get; set; } = [];
     public ICollection<TvShowGenre> Genres { get; set; } = [];

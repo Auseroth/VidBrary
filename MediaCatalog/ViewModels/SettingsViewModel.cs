@@ -45,6 +45,21 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     public IReadOnlyList<ViewMode> AvailableViewModes { get; } =
         Enum.GetValues<ViewMode>().ToList();
 
+    // ── TV Season Ordering ────────────────────────────────────────────────────
+
+    [ObservableProperty] private SeasonOrderMode _defaultSeasonOrderMode;
+
+    public IReadOnlyList<SeasonOrderOption> AvailableSeasonOrderModes { get; } =
+    [
+        new(SeasonOrderMode.TmdbAuto,    "TMDB Auto"),
+        new(SeasonOrderMode.ManualFolder,"Manual (folder / filename)")
+    ];
+
+    [ObservableProperty] private SeasonOrderOption _selectedSeasonOrderMode =
+        new(SeasonOrderMode.TmdbAuto, "TMDB Auto");
+
+    // ── Confirmation ──────────────────────────────────────────────────────────
+
     [ObservableProperty] private string? _saveConfirmation;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -63,6 +78,11 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
         ScanOnLaunch = s.ScanOnLaunch;
         SelectedTheme = s.Theme;
         SelectedViewMode = s.DefaultViewMode;
+
+        // Season order — map the stored enum to the option object
+        SelectedSeasonOrderMode = AvailableSeasonOrderModes
+            .FirstOrDefault(o => o.Mode == s.DefaultSeasonOrderMode)
+            ?? AvailableSeasonOrderModes[0];
 
         return Task.CompletedTask;
     }
@@ -158,6 +178,7 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
         s.ScanOnLaunch = ScanOnLaunch;
         s.Theme = SelectedTheme;
         s.DefaultViewMode = SelectedViewMode;
+        s.DefaultSeasonOrderMode = SelectedSeasonOrderMode?.Mode ?? SeasonOrderMode.TmdbAuto;
 
         await settingsService.SaveAsync();
 

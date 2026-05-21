@@ -49,12 +49,8 @@
 
                 <!-- ══ Hero backdrop ══ -->
                 <Grid Grid.Row="0" ClipToBounds="True">
-                    <Image Stretch="UniformToFill" Opacity="0.35">
-                        <Image.Source>
-                            <BitmapImage UriSource="{Binding BackdropPath}"
-                                         CreateOptions="DelayCreation"/>
-                        </Image.Source>
-                    </Image>
+                    <Image Stretch="UniformToFill" Opacity="0.35"
+                           Source="{Binding BackdropPath}"/>
                     <!-- Gradient fade to page bg -->
                     <Rectangle VerticalAlignment="Bottom" Height="180">
                         <Rectangle.Fill>
@@ -70,7 +66,6 @@
                 <Grid Grid.Row="1" Margin="40,0,40,40">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200"/>
-                        <!-- Poster column -->
                         <ColumnDefinition Width="32"/>
                         <!-- Gutter -->
                         <ColumnDefinition Width="*"/>
@@ -83,18 +78,12 @@
 
                     <!-- ── Poster ── -->
                     <Border Grid.Column="0" CornerRadius="10" ClipToBounds="True"
-                            Height="300" VerticalAlignment="Top"
-                            Margin="0,-120,0,0">
+                            Height="300" VerticalAlignment="Top" Margin="0,-120,0,0">
                         <Grid>
                             <Rectangle Fill="#16213e"/>
                             <TextBlock Text="🎬" FontSize="48" Foreground="#0f3460"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Image Stretch="UniformToFill">
-                                <Image.Source>
-                                    <BitmapImage UriSource="{Binding PosterPath}"
-                                                 CreateOptions="DelayCreation"/>
-                                </Image.Source>
-                            </Image>
+                            <Image Stretch="UniformToFill" Source="{Binding PosterPath}"/>
                         </Grid>
                     </Border>
 
@@ -108,8 +97,7 @@
 
                         <!-- Original title -->
                         <TextBlock Foreground="#6c757d" FontSize="14" Margin="0,0,0,8"
-                                   Visibility="{Binding OriginalTitle,
-                                       Converter={StaticResource StringToVisibility}}">
+                                   Visibility="{Binding OriginalTitle, Converter={StaticResource StringToVisibility}}">
                             <Run Text="Original: "/>
                             <Run Text="{Binding OriginalTitle}"/>
                         </TextBlock>
@@ -120,24 +108,20 @@
                                 <TextBlock Text="{Binding Year}" Foreground="#adb5bd" FontSize="13"/>
                             </Border>
                             <Border Background="#16213e" CornerRadius="4" Padding="8,4" Margin="0,0,8,0"
-                                    Visibility="{Binding Certification,
-                                        Converter={StaticResource StringToVisibility}}">
+                                    Visibility="{Binding Certification, Converter={StaticResource StringToVisibility}}">
                                 <TextBlock Text="{Binding Certification}" Foreground="#adb5bd" FontSize="13"/>
                             </Border>
                             <Border Background="#16213e" CornerRadius="4" Padding="8,4" Margin="0,0,8,0"
-                                    Visibility="{Binding RuntimeDisplay,
-                                        Converter={StaticResource StringToVisibility}}">
+                                    Visibility="{Binding RuntimeDisplay, Converter={StaticResource StringToVisibility}}">
                                 <TextBlock Text="{Binding RuntimeDisplay}" Foreground="#adb5bd" FontSize="13"/>
                             </Border>
                             <Border Background="#f59e0b" CornerRadius="4" Padding="8,4" Margin="0,0,8,0"
-                                    Visibility="{Binding RatingDisplay,
-                                        Converter={StaticResource StringToVisibility}}">
+                                    Visibility="{Binding RatingDisplay, Converter={StaticResource StringToVisibility}}">
                                 <TextBlock Text="{Binding RatingDisplay}" Foreground="White"
                                            FontSize="13" FontWeight="SemiBold"/>
                             </Border>
                             <Border Background="#16213e" CornerRadius="4" Padding="8,4" Margin="0,0,8,0"
-                                    Visibility="{Binding OriginalLanguage,
-                                        Converter={StaticResource StringToVisibility}}">
+                                    Visibility="{Binding OriginalLanguage, Converter={StaticResource StringToVisibility}}">
                                 <TextBlock Text="{Binding OriginalLanguage}" Foreground="#adb5bd" FontSize="13"/>
                             </Border>
                         </WrapPanel>
@@ -171,14 +155,12 @@
                                    Margin="0,0,0,24"/>
 
                         <!-- Directors / Writers -->
-                        <StackPanel Visibility="{Binding Directors,
-                                        Converter={StaticResource StringToVisibility}}"
+                        <StackPanel Visibility="{Binding Directors, Converter={StaticResource StringToVisibility}}"
                                     Margin="0,0,0,8">
                             <TextBlock Text="DIRECTED BY" Style="{StaticResource MetaLabel}"/>
                             <TextBlock Text="{Binding Directors}" Style="{StaticResource MetaValue}"/>
                         </StackPanel>
-                        <StackPanel Visibility="{Binding Writers,
-                                        Converter={StaticResource StringToVisibility}}"
+                        <StackPanel Visibility="{Binding Writers, Converter={StaticResource StringToVisibility}}"
                                     Margin="0,0,0,24">
                             <TextBlock Text="WRITTEN BY" Style="{StaticResource MetaLabel}"/>
                             <TextBlock Text="{Binding Writers}" Style="{StaticResource MetaValue}"/>
@@ -187,11 +169,9 @@
                         <!-- Cast -->
                         <TextBlock Text="Cast" Foreground="#e94560"
                                    FontSize="13" FontWeight="SemiBold" Margin="0,0,0,12"
-                                   Visibility="{Binding Cast.Count,
-                                       Converter={StaticResource NonZeroToVisibility}}"/>
+                                   Visibility="{Binding Cast.Count, Converter={StaticResource NonZeroToVisibility}}"/>
                         <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Disabled"
-                                      Margin="0,0,0,24">
+                                      VerticalScrollBarVisibility="Disabled" Margin="0,0,0,24">
                             <ItemsControl ItemsSource="{Binding Cast}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -203,32 +183,29 @@
                                         <Border Width="90" Margin="0,0,12,0"
                                                 Background="#16213e" CornerRadius="8">
                                             <StackPanel>
-                                                <Border CornerRadius="8,8,0,0"
-                                                        Height="110" ClipToBounds="True">
+                                                <Border CornerRadius="8,8,0,0" Height="110" ClipToBounds="True">
                                                     <Grid>
                                                         <Rectangle Fill="#0f3460"/>
                                                         <TextBlock Text="👤" FontSize="28"
                                                                    HorizontalAlignment="Center"
                                                                    VerticalAlignment="Center"
                                                                    Foreground="#16213e"/>
-                                                        <Image Stretch="UniformToFill">
-                                                            <Image.Source>
-                                                                <BitmapImage UriSource="{Binding PhotoPath}"
-                                                                    CreateOptions="DelayCreation"/>
-                                                            </Image.Source>
-                                                        </Image>
+                                                        <Image Stretch="UniformToFill"
+                                                               Source="{Binding PhotoPath}"/>
                                                     </Grid>
                                                 </Border>
-                                                <Border Padding="6,6,6,8"><StackPanel>
-                                                    <TextBlock Text="{Binding Name}"
-                                                               Foreground="White" FontSize="11"
-                                                               FontWeight="SemiBold"
-                                                               TextTrimming="CharacterEllipsis"
-                                                               TextWrapping="Wrap" MaxHeight="32"/>
-                                                    <TextBlock Text="{Binding Character}"
-                                                               Foreground="#6c757d" FontSize="10"
-                                                               TextTrimming="CharacterEllipsis"/>
-                                                </StackPanel></Border>
+                                                <Border Padding="6,6,6,8">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   Foreground="White" FontSize="11"
+                                                                   FontWeight="SemiBold"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   TextWrapping="Wrap" MaxHeight="32"/>
+                                                        <TextBlock Text="{Binding Character}"
+                                                                   Foreground="#6c757d" FontSize="10"
+                                                                   TextTrimming="CharacterEllipsis"/>
+                                                    </StackPanel>
+                                                </Border>
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
@@ -239,8 +216,7 @@
                         <!-- Tags -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="Tags" Foreground="#e94560"
-                                       FontSize="13" FontWeight="SemiBold"
-                                       VerticalAlignment="Center"/>
+                                       FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             <Button Content="+" Background="Transparent" BorderThickness="0"
                                     Foreground="#adb5bd" Cursor="Hand" Padding="8,0"
                                     Command="{Binding ToggleTagPickerCommand}" FontSize="16"/>
@@ -250,21 +226,15 @@
                         <WrapPanel Margin="0,0,0,8">
                             <ItemsControl ItemsSource="{Binding Tags}">
                                 <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel/>
-                                    </ItemsPanelTemplate>
+                                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Style="{StaticResource TagChip}"
-                                                Background="{Binding Color}">
+                                        <Border Style="{StaticResource TagChip}" Background="{Binding Color}">
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding IconKey}"
-                                                           FontSize="12" Margin="0,0,4,0"
-                                                           Visibility="{Binding IconKey,
-                                                               Converter={StaticResource StringToVisibility}}"/>
-                                                <TextBlock Text="{Binding Name}"
-                                                           Foreground="White" FontSize="12"/>
+                                                <TextBlock Text="{Binding IconKey}" FontSize="12" Margin="0,0,4,0"
+                                                           Visibility="{Binding IconKey, Converter={StaticResource StringToVisibility}}"/>
+                                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="12"/>
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
@@ -273,16 +243,12 @@
                         </WrapPanel>
 
                         <!-- Tag picker -->
-                        <Border Background="#16213e" CornerRadius="8" Padding="12"
-                                Margin="0,0,0,24"
-                                Visibility="{Binding ShowTagPicker,
-                                    Converter={StaticResource BoolToVisibility}}">
+                        <Border Background="#16213e" CornerRadius="8" Padding="12" Margin="0,0,0,24"
+                                Visibility="{Binding ShowTagPicker, Converter={StaticResource BoolToVisibility}}">
                             <WrapPanel>
                                 <ItemsControl ItemsSource="{Binding AvailableTags}">
                                     <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel/>
-                                        </ItemsPanelTemplate>
+                                        <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -290,12 +256,10 @@
                                                     Background="{Binding Color}" Opacity="0.7">
                                                 <Border.InputBindings>
                                                     <MouseBinding MouseAction="LeftClick"
-                                                        Command="{Binding DataContext.ToggleTagCommand,
-                                                            RelativeSource={RelativeSource AncestorType=Page}}"
+                                                        Command="{Binding DataContext.ToggleTagCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                         CommandParameter="{Binding}"/>
                                                 </Border.InputBindings>
-                                                <TextBlock Text="{Binding Name}"
-                                                           Foreground="White" FontSize="12"/>
+                                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="12"/>
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -310,63 +274,45 @@
 
                         <!-- Collection -->
                         <StackPanel Margin="0,0,0,24"
-                                    Visibility="{Binding CollectionName,
-                                        Converter={StaticResource StringToVisibility}}">
+                                    Visibility="{Binding CollectionName, Converter={StaticResource StringToVisibility}}">
                             <TextBlock Text="COLLECTION" Style="{StaticResource MetaLabel}"/>
-                            <Border Background="#0f3460" CornerRadius="6" Padding="10,8"
-                                    Cursor="Hand">
+                            <Border Background="#0f3460" CornerRadius="6" Padding="10,8" Cursor="Hand">
                                 <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                        Command="{Binding OpenCollectionCommand}"/>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding OpenCollectionCommand}"/>
                                 </Border.InputBindings>
-                                <TextBlock Text="{Binding CollectionName}"
-                                           Foreground="White" FontSize="13"
-                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding CollectionName}" Foreground="White"
+                                           FontSize="13" TextWrapping="Wrap"/>
                             </Border>
                         </StackPanel>
 
                         <!-- Technical info -->
                         <TextBlock Text="FILE INFO" Style="{StaticResource MetaLabel}"/>
-                        <Border Background="#16213e" CornerRadius="8" Padding="12"
-                                Margin="0,0,0,16">
+                        <Border Background="#16213e" CornerRadius="8" Padding="12" Margin="0,0,0,16">
                             <StackPanel>
                                 <TextBlock Text="SIZE" Style="{StaticResource MetaLabel}"/>
                                 <TextBlock Text="{Binding FileSize}" Style="{StaticResource MetaValue}"/>
-
                                 <TextBlock Text="VIDEO" Style="{StaticResource MetaLabel}"
-                                           Visibility="{Binding VideoResolution,
-                                               Converter={StaticResource StringToVisibility}}"/>
+                                           Visibility="{Binding VideoResolution, Converter={StaticResource StringToVisibility}}"/>
                                 <TextBlock Style="{StaticResource MetaValue}"
-                                           Visibility="{Binding VideoResolution,
-                                               Converter={StaticResource StringToVisibility}}">
+                                           Visibility="{Binding VideoResolution, Converter={StaticResource StringToVisibility}}">
                                     <Run Text="{Binding VideoResolution}"/>
                                     <Run Text=" · "/>
                                     <Run Text="{Binding VideoCodec}"/>
                                 </TextBlock>
-
                                 <TextBlock Text="AUDIO" Style="{StaticResource MetaLabel}"
-                                           Visibility="{Binding AudioCodec,
-                                               Converter={StaticResource StringToVisibility}}"/>
+                                           Visibility="{Binding AudioCodec, Converter={StaticResource StringToVisibility}}"/>
                                 <TextBlock Style="{StaticResource MetaValue}"
-                                           Visibility="{Binding AudioCodec,
-                                               Converter={StaticResource StringToVisibility}}">
+                                           Visibility="{Binding AudioCodec, Converter={StaticResource StringToVisibility}}">
                                     <Run Text="{Binding AudioCodec}"/>
                                 </TextBlock>
-
                                 <TextBlock Text="AUDIO TRACKS" Style="{StaticResource MetaLabel}"
-                                           Visibility="{Binding AudioTracks,
-                                               Converter={StaticResource StringToVisibility}}"/>
+                                           Visibility="{Binding AudioTracks, Converter={StaticResource StringToVisibility}}"/>
                                 <TextBlock Text="{Binding AudioTracks}" Style="{StaticResource MetaValue}"
-                                           Visibility="{Binding AudioTracks,
-                                               Converter={StaticResource StringToVisibility}}"/>
-
+                                           Visibility="{Binding AudioTracks, Converter={StaticResource StringToVisibility}}"/>
                                 <TextBlock Text="SUBTITLES" Style="{StaticResource MetaLabel}"
-                                           Visibility="{Binding SubtitleTracks,
-                                               Converter={StaticResource StringToVisibility}}"/>
+                                           Visibility="{Binding SubtitleTracks, Converter={StaticResource StringToVisibility}}"/>
                                 <TextBlock Text="{Binding SubtitleTracks}" Style="{StaticResource MetaValue}"
-                                           Visibility="{Binding SubtitleTracks,
-                                               Converter={StaticResource StringToVisibility}}"/>
-
+                                           Visibility="{Binding SubtitleTracks, Converter={StaticResource StringToVisibility}}"/>
                                 <TextBlock Text="PATH" Style="{StaticResource MetaLabel}"/>
                                 <TextBlock Text="{Binding FilePath}" Foreground="#6c757d"
                                            FontSize="11" TextWrapping="Wrap"/>
@@ -378,11 +324,10 @@
             </Grid>
         </ScrollViewer>
 
-        <!-- ══ Match Dialog overlay ══ -->
+        <!-- ══ Match Dialog ══ -->
         <Grid Visibility="{Binding ShowMatchDialog, Converter={StaticResource BoolToVisibility}}"
               Background="#AA000000" Panel.ZIndex="20">
-            <Border Background="#16213e" CornerRadius="12" Padding="0"
-                    Width="560" MaxHeight="680"
+            <Border Background="#16213e" CornerRadius="12" Width="560" MaxHeight="680"
                     VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -390,29 +335,21 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
-                    <!-- Dialog header -->
-                    <Border Grid.Row="0" Background="#0f3460"
-                            CornerRadius="12,12,0,0" Padding="20,16">
+                    <Border Grid.Row="0" Background="#0f3460" CornerRadius="12,12,0,0" Padding="20,16">
                         <Grid>
                             <TextBlock Text="Select TMDB Match" Foreground="White"
-                                       FontSize="16" FontWeight="SemiBold"
-                                       VerticalAlignment="Center"/>
+                                       FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             <Button Content="✕" HorizontalAlignment="Right"
                                     Background="Transparent" BorderThickness="0"
                                     Foreground="#adb5bd" Cursor="Hand" FontSize="16"
                                     Command="{Binding CloseMatchDialogCommand}"/>
                         </Grid>
                     </Border>
-
-                    <!-- Candidate list -->
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
-                                  Padding="16,12">
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="16,12">
                         <ItemsControl ItemsSource="{Binding Candidates}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Margin="0,0,0,8" CornerRadius="8"
-                                            Cursor="Hand" Padding="0">
+                                    <Border Margin="0,0,0,8" CornerRadius="8" Cursor="Hand" Padding="0">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="Background" Value="#1a1a2e"/>
@@ -425,12 +362,10 @@
                                         </Border.Style>
                                         <Border.InputBindings>
                                             <MouseBinding MouseAction="LeftClick"
-                                                Command="{Binding DataContext.ToggleCandidateCommand,
-                                                    RelativeSource={RelativeSource AncestorType=Page}}"
+                                                Command="{Binding DataContext.ToggleCandidateCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                 CommandParameter="{Binding}"/>
                                         </Border.InputBindings>
                                         <StackPanel>
-                                            <!-- Collapsed summary -->
                                             <Border Padding="12,10">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
@@ -456,51 +391,36 @@
                                                         </Border.Style>
                                                     </Border>
                                                     <StackPanel Grid.Column="1">
-                                                        <TextBlock Text="{Binding Title}"
-                                                                   Foreground="White" FontSize="14"
-                                                                   FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding Title}" Foreground="White"
+                                                                   FontSize="14" FontWeight="SemiBold"/>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding YearDisplay}"
-                                                                       Foreground="#6c757d" FontSize="12"/>
+                                                            <TextBlock Text="{Binding YearDisplay}" Foreground="#6c757d" FontSize="12"/>
                                                             <TextBlock Text=" · " Foreground="#6c757d" FontSize="12"/>
-                                                            <TextBlock Text="{Binding RatingDisplay}"
-                                                                       Foreground="#f59e0b" FontSize="12"/>
+                                                            <TextBlock Text="{Binding RatingDisplay}" Foreground="#f59e0b" FontSize="12"/>
                                                         </StackPanel>
                                                     </StackPanel>
                                                     <TextBlock Grid.Column="2"
-                                                               Text="{Binding IsExpanded,
-                                                                   Converter={StaticResource BoolToChevron}}"
-                                                               Foreground="#6c757d" FontSize="12"
-                                                               VerticalAlignment="Center"/>
+                                                               Text="{Binding IsExpanded, Converter={StaticResource BoolToChevron}}"
+                                                               Foreground="#6c757d" FontSize="12" VerticalAlignment="Center"/>
                                                 </Grid>
                                             </Border>
-
-                                            <!-- Expanded detail -->
                                             <Grid Margin="42,0,12,12"
-                                                  Visibility="{Binding IsExpanded,
-                                                      Converter={StaticResource BoolToVisibility}}">
+                                                  Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibility}}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="80"/>
                                                     <ColumnDefinition Width="12"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Border Grid.Column="0" CornerRadius="4"
-                                                        Height="120" ClipToBounds="True">
+                                                <Border Grid.Column="0" CornerRadius="4" Height="120" ClipToBounds="True">
                                                     <Grid>
                                                         <Rectangle Fill="#0f3460"/>
-                                                        <Image Stretch="UniformToFill">
-                                                            <Image.Source>
-                                                                <BitmapImage UriSource="{Binding PosterPath}"
-                                                                    CreateOptions="DelayCreation"/>
-                                                            </Image.Source>
-                                                        </Image>
+                                                        <Image Stretch="UniformToFill"
+                                                               Source="{Binding PosterPath}"/>
                                                     </Grid>
                                                 </Border>
-                                                <TextBlock Grid.Column="2"
-                                                           Text="{Binding Overview}"
+                                                <TextBlock Grid.Column="2" Text="{Binding Overview}"
                                                            Foreground="#adb5bd" FontSize="12"
-                                                           TextWrapping="Wrap"
-                                                           MaxHeight="120"
+                                                           TextWrapping="Wrap" MaxHeight="120"
                                                            TextTrimming="CharacterEllipsis"/>
                                             </Grid>
                                         </StackPanel>
@@ -509,10 +429,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
-
-                    <!-- Dialog footer -->
-                    <Border Grid.Row="2" Background="#0d0d1a"
-                            CornerRadius="0,0,12,12" Padding="20,14">
+                    <Border Grid.Row="2" Background="#0d0d1a" CornerRadius="0,0,12,12" Padding="20,14">
                         <Grid>
                             <Button Content="Clear Match" HorizontalAlignment="Left"
                                     Background="Transparent" BorderThickness="1"

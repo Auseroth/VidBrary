@@ -17,4 +17,11 @@ public class AppSettings
     [
         "Title", "Year", "Genre", "Rating", "Runtime", "MatchStatus", "Collection", "Tags"
     ];
+
+    /// <summary>
+    /// Global fallback when a show has no per-series override.
+    /// TmdbAuto is the default — use ManualFolder if most of your library
+    /// uses leading-number filenames (e.g. "01 - Pilot.mkv").
+    /// </summary>
+    public SeasonOrderMode DefaultSeasonOrderMode { get; set; } = SeasonOrderMode.TmdbAuto;
 }
