@@ -269,19 +269,20 @@
             <!-- ══ APPEARANCE ══ -->
             <TextBlock Text="🎨  APPEARANCE" Style="{StaticResource SectionHeader}"/>
 
+            <!-- Theme + View Mode row -->
             <Grid Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="24"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Theme" Style="{StaticResource FieldLabel}"/>
+                    <TextBlock Text="Theme Preset" Style="{StaticResource FieldLabel}"/>
                     <ComboBox ItemsSource="{Binding AvailableThemes}"
                               SelectedItem="{Binding SelectedTheme}"/>
+                    <TextBlock Text="Dark · Light · Follow Windows system setting"
+                               Foreground="#6c757d" FontSize="11" Margin="0,4,0,0"/>
                 </StackPanel>
-
                 <StackPanel Grid.Column="2">
                     <TextBlock Text="Default View Mode" Style="{StaticResource FieldLabel}"/>
                     <ComboBox ItemsSource="{Binding AvailableViewModes}"
@@ -289,8 +290,103 @@
                 </StackPanel>
             </Grid>
 
+            <!-- Custom Colors -->
+            <TextBlock Text="Custom Colors" Style="{StaticResource FieldLabel}" Margin="0,8,0,6"/>
+            <TextBlock Text="Override any preset color. Use hex values like #1a1a2e. Click Save to apply."
+                       Foreground="#6c757d" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Background Color -->
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <TextBlock Text="Background" Style="{StaticResource FieldLabel}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Height="36" CornerRadius="4"
+                                Background="{Binding BackgroundColor}"
+                                BorderBrush="#0f3460" BorderThickness="1"/>
+                        <TextBox Grid.Column="2" Style="{StaticResource TextInput}"
+                                 Text="{Binding BackgroundColor, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Page/window background"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Surface Color -->
+                <StackPanel Grid.Row="0" Grid.Column="2">
+                    <TextBlock Text="Surface" Style="{StaticResource FieldLabel}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Height="36" CornerRadius="4"
+                                Background="{Binding SurfaceColor}"
+                                BorderBrush="#0f3460" BorderThickness="1"/>
+                        <TextBox Grid.Column="2" Style="{StaticResource TextInput}"
+                                 Text="{Binding SurfaceColor, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Cards, sidebar, and panel backgrounds"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Accent Color -->
+                <StackPanel Grid.Row="2" Grid.Column="0">
+                    <TextBlock Text="Accent" Style="{StaticResource FieldLabel}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Height="36" CornerRadius="4"
+                                Background="{Binding AccentColor}"
+                                BorderBrush="#0f3460" BorderThickness="1"/>
+                        <TextBox Grid.Column="2" Style="{StaticResource TextInput}"
+                                 Text="{Binding AccentColor, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Primary buttons and highlights"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Secondary Color -->
+                <StackPanel Grid.Row="2" Grid.Column="2">
+                    <TextBlock Text="Secondary" Style="{StaticResource FieldLabel}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Height="36" CornerRadius="4"
+                                Background="{Binding SecondaryColor}"
+                                BorderBrush="#0f3460" BorderThickness="1"/>
+                        <TextBox Grid.Column="2" Style="{StaticResource TextInput}"
+                                 Text="{Binding SecondaryColor, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Borders, hover states, and secondary buttons"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+
+            <Button Content="↺ Reset to Preset Defaults"
+                    Style="{StaticResource ActionButton}"
+                    Command="{Binding ResetColorsCommand}"
+                    HorizontalAlignment="Left" Margin="0,4,0,0"/>
+
             <!-- TV Season Ordering -->
-            <Grid Margin="0,0,0,12">
+            <Grid Margin="0,16,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="24"/>
@@ -299,7 +395,8 @@
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="Default TV Season Order" Style="{StaticResource FieldLabel}"/>
                     <ComboBox ItemsSource="{Binding AvailableSeasonOrderModes}"
-                              SelectedItem="{Binding SelectedSeasonOrderMode}"/>
+                              SelectedItem="{Binding SelectedSeasonOrderMode}"
+                              DisplayMemberPath="Label"/>
                     <TextBlock Text="TMDB Auto: sort by season/episode number from TMDB.  Manual: sort seasons by folder name; episodes by leading number in filename (e.g. 01 - Title.mkv)."
                                Foreground="#6c757d" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"/>
                 </StackPanel>

@@ -4,7 +4,7 @@
         Title="NasCastr" Height="768" Width="1280"
         MinHeight="600" MinWidth="900"
         WindowStartupLocation="CenterScreen"
-        Background="#1a1a2e"
+        Background="{DynamicResource AppBrushBg}"
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
@@ -77,6 +77,8 @@
             <!-- ═══ Sidebar ═══ -->
             <Border Grid.Column="0" Background="#16213e" Padding="0,16,0,16">
                 <DockPanel>
+
+                    <!-- Top: app name + profile card -->
                     <StackPanel DockPanel.Dock="Top" Margin="16,0,16,20">
                         <TextBlock Text="🎬 NasCastr" Foreground="White"
                                    FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
@@ -98,12 +100,12 @@
                         </Border>
                     </StackPanel>
 
+                    <!-- Bottom: back + settings -->
                     <Button DockPanel.Dock="Bottom"
                             Content="⚙  Settings"
                             Command="{Binding MainViewModel.NavigateSettingsCommand}"
                             Style="{StaticResource SidebarButtonStyle}"
                             Margin="8,0,8,4"/>
-
                     <Button DockPanel.Dock="Bottom"
                             Content="← Back"
                             Command="{Binding MainViewModel.GoBackCommand}"
@@ -112,24 +114,41 @@
                             Visibility="{Binding MainViewModel.CanGoBack,
                                 Converter={StaticResource BoolToVisibility}}"/>
 
+                    <!-- Nav buttons -->
                     <StackPanel Margin="8,0">
-                        <Button Content="🏠  Home"        Command="{Binding MainViewModel.NavigateHomeCommand}"        Style="{StaticResource SidebarButtonStyle}"/>
-                        <Button Content="🎬  Movies"      Command="{Binding MainViewModel.NavigateMoviesCommand}"      Style="{StaticResource SidebarButtonStyle}"/>
-                        <Button Content="📺  TV Shows"    Command="{Binding MainViewModel.NavigateTvShowsCommand}"     Style="{StaticResource SidebarButtonStyle}"/>
-                        <Button Content="📋  My List"     Command="{Binding MainViewModel.NavigateMyListCommand}"      Style="{StaticResource SidebarButtonStyle}"/>
-                        <Button Content="🗂  Collections" Command="{Binding MainViewModel.NavigateCollectionsCommand}" Style="{StaticResource SidebarButtonStyle}"/>
-                        <Button Content="👤  People"      Command="{Binding MainViewModel.NavigatePeopleCommand}"      Style="{StaticResource SidebarButtonStyle}"/>
-                        <Button Content="🏷  Tags"        Command="{Binding MainViewModel.NavigateTagsCommand}"        Style="{StaticResource SidebarButtonStyle}"/>
+                        <Button Content="🏠  Home"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding MainViewModel.NavigateHomeCommand}"/>
+                        <Button Content="🎬  Movies"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding MainViewModel.NavigateMoviesCommand}"/>
+                        <Button Content="📺  TV Shows"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding MainViewModel.NavigateTvShowsCommand}"/>
+                        <Button Content="📋  My List"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding MainViewModel.NavigateMyListCommand}"/>
+                        <Button Content="🗂  Collections"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding MainViewModel.NavigateCollectionsCommand}"/>
+                        <Button Content="👤  People"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding MainViewModel.NavigatePeopleCommand}"/>
+                        <Button Content="🏷  Tags"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Command="{Binding MainViewModel.NavigateTagsCommand}"/>
                     </StackPanel>
+
                 </DockPanel>
             </Border>
 
+            <!-- ═══ Page frame ═══ -->
             <Frame x:Name="MainFrame" Grid.Column="1"
                    NavigationUIVisibility="Hidden"
                    Background="#1a1a2e"/>
         </Grid>
 
-        <!-- ═══ Status Bar ═══ -->
+        <!-- ═══ Status bar ═══ -->
         <Border Grid.Row="2" Background="#0d0d1a" Padding="16,6">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -149,5 +168,6 @@
                 </StackPanel>
             </Grid>
         </Border>
+
     </Grid>
 </Window>

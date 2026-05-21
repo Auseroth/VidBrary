@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaCatalog.Models;
 using MediaCatalog.Services.Settings;
+using MediaCatalog.Services.Theme;
 using MediaCatalog.ViewModels.Base;
 using Microsoft.Win32;
 
@@ -11,31 +12,25 @@ namespace MediaCatalog.ViewModels;
 public partial class SettingsViewModel(ISettingsService settingsService) : ViewModelBase
 {
     // ── Directories ───────────────────────────────────────────────────────────
-
     [ObservableProperty] private ObservableCollection<string> _movieDirectories = [];
     [ObservableProperty] private ObservableCollection<string> _tvShowDirectories = [];
 
     // ── File Extensions ───────────────────────────────────────────────────────
-
     [ObservableProperty] private ObservableCollection<string> _allowedExtensions = [];
     [ObservableProperty] private string _newExtension = string.Empty;
 
     // ── TMDB ──────────────────────────────────────────────────────────────────
-
     [ObservableProperty] private string _tmdbApiKey = string.Empty;
     [ObservableProperty] private bool _tmdbKeyVisible;
 
     // ── Playback ──────────────────────────────────────────────────────────────
-
     [ObservableProperty] private string _mediaPlayerPath = string.Empty;
     [ObservableProperty] private bool _useWindowsDefault = true;
 
     // ── Scan ──────────────────────────────────────────────────────────────────
-
     [ObservableProperty] private bool _scanOnLaunch;
 
     // ── Appearance ────────────────────────────────────────────────────────────
-
     [ObservableProperty] private AppTheme _selectedTheme;
     [ObservableProperty] private ViewMode _selectedViewMode;
 
@@ -45,8 +40,13 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     public IReadOnlyList<ViewMode> AvailableViewModes { get; } =
         Enum.GetValues<ViewMode>().ToList();
 
-    // ── TV Season Ordering ────────────────────────────────────────────────────
+    // ── Custom colors ─────────────────────────────────────────────────────────
+    [ObservableProperty] private string _backgroundColor = "#1a1a2e";
+    [ObservableProperty] private string _surfaceColor    = "#16213e";
+    [ObservableProperty] private string _accentColor     = "#e94560";
+    [ObservableProperty] private string _secondaryColor  = "#0f3460";
 
+    // ── TV Season Ordering ────────────────────────────────────────────────────
     [ObservableProperty] private SeasonOrderMode _defaultSeasonOrderMode;
 
     public IReadOnlyList<SeasonOrderOption> AvailableSeasonOrderModes { get; } =
@@ -59,7 +59,6 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
         new(SeasonOrderMode.TmdbAuto, "TMDB Auto");
 
     // ── Confirmation ──────────────────────────────────────────────────────────
-
     [ObservableProperty] private string? _saveConfirmation;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -68,18 +67,22 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     {
         var s = settingsService.Current;
 
-        MovieDirectories = new ObservableCollection<string>(s.MovieDirectories);
+        MovieDirectories  = new ObservableCollection<string>(s.MovieDirectories);
         TvShowDirectories = new ObservableCollection<string>(s.TvShowDirectories);
         AllowedExtensions = new ObservableCollection<string>(s.AllowedExtensions);
 
-        TmdbApiKey = s.TmdbApiKey ?? string.Empty;
-        MediaPlayerPath = s.DefaultMediaPlayerPath ?? string.Empty;
+        TmdbApiKey       = s.TmdbApiKey ?? string.Empty;
+        MediaPlayerPath  = s.DefaultMediaPlayerPath ?? string.Empty;
         UseWindowsDefault = string.IsNullOrWhiteSpace(s.DefaultMediaPlayerPath);
-        ScanOnLaunch = s.ScanOnLaunch;
-        SelectedTheme = s.Theme;
+        ScanOnLaunch     = s.ScanOnLaunch;
+        SelectedTheme    = s.Theme;
         SelectedViewMode = s.DefaultViewMode;
 
-        // Season order — map the stored enum to the option object
+        BackgroundColor = s.BackgroundColor;
+        SurfaceColor    = s.SurfaceColor;
+        AccentColor     = s.AccentColor;
+        SecondaryColor  = s.SecondaryColor;
+
         SelectedSeasonOrderMode = AvailableSeasonOrderModes
             .FirstOrDefault(o => o.Mode == s.DefaultSeasonOrderMode)
             ?? AvailableSeasonOrderModes[0];
@@ -163,6 +166,21 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     private void ToggleTmdbKeyVisibility() =>
         TmdbKeyVisible = !TmdbKeyVisible;
 
+    // ── Color resets ──────────────────────────────────────────────────────────
+
+    [RelayCommand]
+    private void ResetColors()
+    {
+        var s = settingsService.Current;
+        // Reset to theme defaults by clearing overrides
+        var defaults = SelectedTheme switch
+        {
+            AppTheme.Light => ("#f5f7fa", "#ffffff", "#e94560", "#1a73e8"),
+            _              => ("#1a1a2e", "#16213e", "#e94560", "#0f3460")
+        };
+        (BackgroundColor, SurfaceColor, AccentColor, SecondaryColor) = defaults;
+    }
+
     // ── Save ──────────────────────────────────────────────────────────────────
 
     [RelayCommand]
@@ -170,17 +188,25 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     {
         var s = settingsService.Current;
 
-        s.MovieDirectories = [.. MovieDirectories];
+        s.MovieDirectories  = [.. MovieDirectories];
         s.TvShowDirectories = [.. TvShowDirectories];
         s.AllowedExtensions = [.. AllowedExtensions];
-        s.TmdbApiKey = string.IsNullOrWhiteSpace(TmdbApiKey) ? null : TmdbApiKey.Trim();
+        s.TmdbApiKey        = string.IsNullOrWhiteSpace(TmdbApiKey) ? null : TmdbApiKey.Trim();
         s.DefaultMediaPlayerPath = UseWindowsDefault ? null : MediaPlayerPath;
-        s.ScanOnLaunch = ScanOnLaunch;
-        s.Theme = SelectedTheme;
-        s.DefaultViewMode = SelectedViewMode;
+        s.ScanOnLaunch      = ScanOnLaunch;
+        s.Theme             = SelectedTheme;
+        s.DefaultViewMode   = SelectedViewMode;
         s.DefaultSeasonOrderMode = SelectedSeasonOrderMode?.Mode ?? SeasonOrderMode.TmdbAuto;
 
+        s.BackgroundColor = BackgroundColor;
+        s.SurfaceColor    = SurfaceColor;
+        s.AccentColor     = AccentColor;
+        s.SecondaryColor  = SecondaryColor;
+
         await settingsService.SaveAsync();
+
+        // Apply the new theme immediately — no restart needed
+        ThemeService.Apply(s);
 
         SaveConfirmation = "Settings saved ✓";
         await Task.Delay(3000);
@@ -191,7 +217,6 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
 
     private static string? BrowseForFolder()
     {
-        // WPF has no built-in folder picker — use OpenFileDialog pointed at a folder
         var dialog = new OpenFolderDialog { Title = "Select Folder" };
         return dialog.ShowDialog() == true ? dialog.FolderName : null;
     }

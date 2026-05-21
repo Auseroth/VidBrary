@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:converters="clr-namespace:MediaCatalog.Converters">
 
+    <!-- ══ Converters ══ -->
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility"/>
     <converters:BoolToEyeIconConverter           x:Key="BoolToEyeIcon"/>
@@ -10,6 +11,14 @@
     <converters:ZeroToVisibilityConverter        x:Key="ZeroToVisibility"/>
     <converters:NonZeroToVisibilityConverter     x:Key="NonZeroToVisibility"/>
 
+    <!-- ══ Theme brushes — mutated at runtime by ThemeService ══ -->
+    <SolidColorBrush x:Key="AppBrushBg"        Color="#1a1a2e"/>
+    <SolidColorBrush x:Key="AppBrushSurface"   Color="#16213e"/>
+    <SolidColorBrush x:Key="AppBrushAccent"    Color="#e94560"/>
+    <SolidColorBrush x:Key="AppBrushSecondary" Color="#0f3460"/>
+    <SolidColorBrush x:Key="AppBrushText"      Color="White"/>
+    <SolidColorBrush x:Key="AppBrushTextMuted" Color="#adb5bd"/>
+
     <!-- ══ Scrollbar thumb ══ -->
     <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -17,14 +26,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
-                    <Border x:Name="Bg" Background="#3a3a5c" CornerRadius="3"
-                            Margin="2"/>
+                    <Border x:Name="Bg" Background="#3a3a5c" CornerRadius="3" Margin="2"/>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bg" Property="Background" Value="#6c6c9a"/>
                         </Trigger>
                         <Trigger Property="IsDragging" Value="True">
-                            <Setter TargetName="Bg" Property="Background" Value="#e94560"/>
+                            <Setter TargetName="Bg" Property="Background"
+                                    Value="{DynamicResource AppBrushAccent}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -32,7 +41,7 @@
         </Setter>
     </Style>
 
-    <!-- ══ ScrollBar (vertical) ══ -->
+    <!-- ══ ScrollBar ══ -->
     <Style TargetType="{x:Type ScrollBar}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Width" Value="8"/>
@@ -67,7 +76,7 @@
         </Style.Triggers>
     </Style>
 
-    <!-- ══ ScrollViewer — passes mouse-wheel through when inner scrollers are focused ══ -->
+    <!-- ══ ScrollViewer ══ -->
     <Style TargetType="{x:Type ScrollViewer}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Template">
@@ -105,10 +114,10 @@
         </Setter>
     </Style>
 
-    <!-- ══ ComboBox — dark theme ══ -->
+    <!-- ══ ComboBoxItem ══ -->
     <Style TargetType="{x:Type ComboBoxItem}">
-        <Setter Property="Background"  Value="#16213e"/>
-        <Setter Property="Foreground"  Value="White"/>
+        <Setter Property="Background"  Value="{DynamicResource AppBrushSurface}"/>
+        <Setter Property="Foreground"  Value="{DynamicResource AppBrushText}"/>
         <Setter Property="Padding"     Value="10,7"/>
         <Setter Property="FontSize"    Value="13"/>
         <Setter Property="Template">
@@ -120,7 +129,8 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="Bg" Property="Background" Value="#0f3460"/>
+                            <Setter TargetName="Bg" Property="Background"
+                                    Value="{DynamicResource AppBrushSecondary}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Bg" Property="Background" Value="#1a73e8"/>
@@ -131,14 +141,15 @@
         </Setter>
     </Style>
 
+    <!-- ══ ComboBox ══ -->
     <Style TargetType="{x:Type ComboBox}">
-        <Setter Property="Background"       Value="#16213e"/>
-        <Setter Property="Foreground"       Value="White"/>
-        <Setter Property="BorderBrush"      Value="#0f3460"/>
-        <Setter Property="BorderThickness"  Value="1"/>
-        <Setter Property="Padding"          Value="10,6"/>
-        <Setter Property="FontSize"         Value="13"/>
-        <Setter Property="Cursor"           Value="Hand"/>
+        <Setter Property="Background"      Value="{DynamicResource AppBrushSurface}"/>
+        <Setter Property="Foreground"      Value="{DynamicResource AppBrushText}"/>
+        <Setter Property="BorderBrush"     Value="{DynamicResource AppBrushSecondary}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding"         Value="10,6"/>
+        <Setter Property="FontSize"        Value="13"/>
+        <Setter Property="Cursor"          Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBox}">
@@ -159,7 +170,8 @@
                                                   Margin="{TemplateBinding Padding}"
                                                   VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1" Text="▾"
-                                           Foreground="#adb5bd" FontSize="11"
+                                           Foreground="{DynamicResource AppBrushTextMuted}"
+                                           FontSize="11"
                                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             </Grid>
                         </Border>
@@ -169,9 +181,9 @@
                                AllowsTransparency="True"
                                Focusable="False"
                                PopupAnimation="Slide">
-                            <Border Background="#16213e"
-                                    BorderBrush="#0f3460" BorderThickness="1"
-                                    CornerRadius="4"
+                            <Border Background="{DynamicResource AppBrushSurface}"
+                                    BorderBrush="{DynamicResource AppBrushSecondary}"
+                                    BorderThickness="1" CornerRadius="4"
                                     MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                     MinWidth="{TemplateBinding ActualWidth}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -205,7 +217,7 @@
     <!-- ══ Sidebar button ══ -->
     <Style x:Key="SidebarButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#adb5bd"/>
+        <Setter Property="Foreground" Value="{DynamicResource AppBrushTextMuted}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="Padding" Value="12,10"/>
@@ -221,12 +233,16 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bg" Property="Background" Value="#0f3460"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter TargetName="Bg" Property="Background"
+                                    Value="{DynamicResource AppBrushSecondary}"/>
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource AppBrushText}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Bg" Property="Background" Value="#e94560"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter TargetName="Bg" Property="Background"
+                                    Value="{DynamicResource AppBrushAccent}"/>
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource AppBrushText}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -234,11 +250,12 @@
         </Setter>
     </Style>
 
+    <!-- ══ Stat card ══ -->
     <Style x:Key="StatCardStyle" TargetType="Border">
-        <Setter Property="Background" Value="#16213e"/>
+        <Setter Property="Background"   Value="{DynamicResource AppBrushSurface}"/>
         <Setter Property="CornerRadius" Value="10"/>
-        <Setter Property="Padding" Value="24,20"/>
-        <Setter Property="MinWidth" Value="160"/>
+        <Setter Property="Padding"      Value="24,20"/>
+        <Setter Property="MinWidth"     Value="160"/>
     </Style>
 
 </ResourceDictionary>

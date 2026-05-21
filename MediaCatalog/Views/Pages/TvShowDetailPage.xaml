@@ -108,6 +108,64 @@
                         <TextBlock Text="{Binding Genres}" Foreground="#adb5bd"
                                    FontSize="13" Margin="0,0,0,16" TextWrapping="Wrap"/>
 
+                        <!-- Tags (above action buttons) -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                            <TextBlock Text="Tags" Foreground="#e94560"
+                FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <Button Content="+" Background="Transparent" BorderThickness="0"
+             Foreground="#adb5bd" Cursor="Hand" Padding="8,0"
+             Command="{Binding ToggleTagPickerCommand}" FontSize="16"/>
+                        </StackPanel>
+                        <WrapPanel Margin="0,0,0,6">
+                            <ItemsControl ItemsSource="{Binding Tags}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource TagChip}" Background="{Binding Color}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding IconKey}" FontSize="12" Margin="0,0,4,0"
+                                    Visibility="{Binding IconKey, Converter={StaticResource StringToVisibility}}"/>
+                                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="12"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </WrapPanel>
+                        <Border Background="#16213e" CornerRadius="8" Padding="12" Margin="0,0,0,16"
+         Visibility="{Binding ShowTagPicker, Converter={StaticResource BoolToVisibility}}">
+                            <WrapPanel>
+                                <ItemsControl ItemsSource="{Binding AvailableTags}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource TagChip}"
+                             Background="{Binding Color}" Opacity="0.7">
+                                                <Border.InputBindings>
+                                                    <MouseBinding MouseAction="LeftClick"
+                                 Command="{Binding DataContext.ToggleTagCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                 CommandParameter="{Binding}"/>
+                                                </Border.InputBindings>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding IconKey}" FontSize="12" Margin="0,0,4,0"
+                                        Visibility="{Binding IconKey, Converter={StaticResource StringToVisibility}}"/>
+                                                    <TextBlock Text="{Binding Name}" Foreground="White" FontSize="12"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </WrapPanel>
+                        </Border>
+
                         <!-- Actions -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
                             <Button Style="{StaticResource DetailButton}"
@@ -115,6 +173,10 @@
                                     Content="{Binding MatchButtonLabel}"
                                     Command="{Binding OpenMatchDialogCommand}"
                                     IsEnabled="{Binding MatchButtonEnabled}"/>
+                            <Button Style="{StaticResource DetailButton}"
+                                    Background="#0f3460" Content="＋ My List"
+                                    Command="{Binding AddToMyListCommand}"
+                                    Margin="0,0,12,0"/>
                         </StackPanel>
 
                         <!-- Overview -->
@@ -170,49 +232,7 @@
                             </ItemsControl>
                         </ScrollViewer>
 
-                        <!-- Tags -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Tags" Foreground="#e94560"
-                                       FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            <Button Content="+" Background="Transparent" BorderThickness="0"
-                                    Foreground="#adb5bd" Cursor="Hand" Padding="8,0"
-                                    Command="{Binding ToggleTagPickerCommand}" FontSize="16"/>
-                        </StackPanel>
-                        <WrapPanel Margin="0,0,0,8">
-                            <ItemsControl ItemsSource="{Binding Tags}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Style="{StaticResource TagChip}" Background="{Binding Color}">
-                                            <TextBlock Text="{Binding Name}" Foreground="White" FontSize="12"/>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </WrapPanel>
-                        <Border Background="#16213e" CornerRadius="8" Padding="12" Margin="0,0,0,24"
-                                Visibility="{Binding ShowTagPicker, Converter={StaticResource BoolToVisibility}}">
-                            <ItemsControl ItemsSource="{Binding AvailableTags}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Style="{StaticResource TagChip}"
-                                                Background="{Binding Color}" Opacity="0.7" Cursor="Hand">
-                                            <Border.InputBindings>
-                                                <MouseBinding MouseAction="LeftClick"
-                                                    Command="{Binding DataContext.ToggleTagCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                    CommandParameter="{Binding}"/>
-                                            </Border.InputBindings>
-                                            <TextBlock Text="{Binding Name}" Foreground="White" FontSize="12"/>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </Border>
+                       
 
                         <!-- ══ Seasons header + order picker ══ -->
                         <Grid Margin="0,0,0,12">

@@ -276,60 +276,6 @@
                             </ItemsControl>
                         </ScrollViewer>
 
-                        <!-- Tags -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                            <TextBlock Text="Tags" Foreground="#e94560"
-                                       FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            <Button Content="+" Background="Transparent" BorderThickness="0"
-                                    Foreground="#adb5bd" Cursor="Hand" Padding="8,0"
-                                    Command="{Binding ToggleTagPickerCommand}" FontSize="16"/>
-                        </StackPanel>
-
-                        <!-- Applied tags -->
-                        <WrapPanel Margin="0,0,0,8">
-                            <ItemsControl ItemsSource="{Binding Tags}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Style="{StaticResource TagChip}" Background="{Binding Color}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding IconKey}" FontSize="12" Margin="0,0,4,0"
-                                                           Visibility="{Binding IconKey, Converter={StaticResource StringToVisibility}}"/>
-                                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="12"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </WrapPanel>
-
-                        <!-- Tag picker -->
-                        <Border Background="#16213e" CornerRadius="8" Padding="12" Margin="0,0,0,24"
-                                Visibility="{Binding ShowTagPicker, Converter={StaticResource BoolToVisibility}}">
-                            <WrapPanel>
-                                <ItemsControl ItemsSource="{Binding AvailableTags}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Style="{StaticResource TagChip}"
-                                                    Background="{Binding Color}" Opacity="0.7">
-                                                <Border.InputBindings>
-                                                    <MouseBinding MouseAction="LeftClick"
-                                                        Command="{Binding DataContext.ToggleTagCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                        CommandParameter="{Binding}"/>
-                                                </Border.InputBindings>
-                                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="12"/>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </WrapPanel>
-                        </Border>
-
                     </StackPanel>
 
                     <!-- ── Side panel ── -->

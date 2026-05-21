@@ -5,6 +5,7 @@ using MediaCatalog.Services.MediaInfo;
 using MediaCatalog.Services.Navigation;
 using MediaCatalog.Services.Scanner;
 using MediaCatalog.Services.Settings;
+using MediaCatalog.Services.Theme;
 using MediaCatalog.Services.Tmdb;
 using MediaCatalog.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +92,9 @@ public partial class App : Application
 
         var settings = Services.GetRequiredService<ISettingsService>();
         await settings.LoadAsync();
+
+        // Apply the saved theme immediately so the window opens with the correct colors
+        ThemeService.Apply(settings.Current);
 
         // Load profiles into the singleton so the sidebar can display the active one
         await Services.GetRequiredService<ProfilesViewModel>().LoadAsync();
