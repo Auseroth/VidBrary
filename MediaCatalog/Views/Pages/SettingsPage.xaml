@@ -1,0 +1,311 @@
+﻿<Page x:Class="MediaCatalog.Views.Pages.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="#1a1a2e">
+
+    <Page.Resources>
+        <!-- Section header style -->
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#e94560"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,24,0,10"/>
+        </Style>
+
+        <!-- Label style -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#adb5bd"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <!-- Input style -->
+        <Style x:Key="TextInput" TargetType="TextBox">
+            <Setter Property="Background" Value="#16213e"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#0f3460"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="CaretBrush" Value="White"/>
+        </Style>
+
+        <!-- Directory chip style -->
+        <Style x:Key="ChipStyle" TargetType="Border">
+            <Setter Property="Background" Value="#0f3460"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+        </Style>
+
+        <!-- Tag chip style -->
+        <Style x:Key="ExtChipStyle" TargetType="Border">
+            <Setter Property="Background" Value="#16213e"/>
+            <Setter Property="BorderBrush" Value="#0f3460"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+        </Style>
+
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#0f3460"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Background" Value="#e94560"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#e94560"/>
+            <Setter Property="Padding" Value="4,0"/>
+        </Style>
+
+        <Style x:Key="ToggleStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#adb5bd"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="40,32,40,40" MaxWidth="720">
+
+            <!-- ── Page Header ── -->
+            <TextBlock Text="Settings" Foreground="White"
+                       FontSize="28" FontWeight="Bold" Margin="0,0,0,4"/>
+            <TextBlock Text="Configure directories, metadata, playback and appearance."
+                       Foreground="#6c757d" FontSize="13"/>
+
+            <!-- ══ MOVIE DIRECTORIES ══ -->
+            <TextBlock Text="🎬  MOVIE DIRECTORIES" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Style="{StaticResource FieldLabel}"
+                       Text="Folders to scan for movie files (any drive, any number of paths)."/>
+
+            <ItemsControl ItemsSource="{Binding MovieDirectories}" Margin="0,0,0,8">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource ChipStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding}"
+                                           Foreground="White" FontSize="13"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <Button Grid.Column="1" Content="✕"
+                                        Style="{StaticResource DangerButton}"
+                                        Command="{Binding DataContext.RemoveMovieDirectoryCommand,
+                                                  RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"
+                                        Margin="12,0,0,0"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Content="+ Add Movie Directory"
+                    Style="{StaticResource ActionButton}"
+                    Command="{Binding AddMovieDirectoryCommand}"
+                    HorizontalAlignment="Left"/>
+
+            <!-- ══ TV DIRECTORIES ══ -->
+            <TextBlock Text="📺  TV SHOW DIRECTORIES" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Style="{StaticResource FieldLabel}"
+                       Text="Folders to scan for TV shows. Each subfolder is treated as a series."/>
+
+            <ItemsControl ItemsSource="{Binding TvShowDirectories}" Margin="0,0,0,8">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource ChipStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding}"
+                                           Foreground="White" FontSize="13"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <Button Grid.Column="1" Content="✕"
+                                        Style="{StaticResource DangerButton}"
+                                        Command="{Binding DataContext.RemoveTvDirectoryCommand,
+                                                  RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"
+                                        Margin="12,0,0,0"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Content="+ Add TV Directory"
+                    Style="{StaticResource ActionButton}"
+                    Command="{Binding AddTvDirectoryCommand}"
+                    HorizontalAlignment="Left"/>
+
+            <!-- ══ FILE EXTENSIONS ══ -->
+            <TextBlock Text="📄  ALLOWED FILE EXTENSIONS" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Style="{StaticResource FieldLabel}"
+                       Text="Only files with these extensions will be scanned."/>
+
+            <ItemsControl ItemsSource="{Binding AllowedExtensions}" Margin="0,0,0,8">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource ExtChipStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding}" Foreground="White"
+                                           FontSize="13" VerticalAlignment="Center"/>
+                                <Button Content="✕"
+                                        Style="{StaticResource DangerButton}"
+                                        Command="{Binding DataContext.RemoveExtensionCommand,
+                                                  RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"
+                                        Margin="6,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBox Style="{StaticResource TextInput}"
+                         Text="{Binding NewExtension, UpdateSourceTrigger=PropertyChanged}"
+                         Width="140" Margin="0,0,8,0"
+                         ToolTip="e.g. .avi">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding AddExtensionCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Content="+ Add" Style="{StaticResource ActionButton}"
+                        Command="{Binding AddExtensionCommand}"/>
+            </StackPanel>
+
+            <!-- ══ TMDB API KEY ══ -->
+            <TextBlock Text="🔑  TMDB API KEY" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Style="{StaticResource FieldLabel}">
+                <Run Text="Required for metadata, posters and ratings. Get a free key at "/>
+                <Hyperlink NavigateUri="https://www.themoviedb.org/settings/api"
+                           RequestNavigate="Hyperlink_RequestNavigate">
+                    themoviedb.org
+                </Hyperlink>
+            </TextBlock>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <PasswordBox x:Name="TmdbPasswordBox"
+                             Grid.Column="0"
+                             Background="#16213e" Foreground="White"
+                             BorderBrush="#0f3460" BorderThickness="1"
+                             Padding="10,8" FontSize="13"
+                             Visibility="{Binding TmdbKeyVisible,
+                                 Converter={StaticResource InverseBoolToVisibility}}"
+                             PasswordChanged="TmdbPasswordBox_PasswordChanged"/>
+
+                <TextBox Grid.Column="0"
+                         Style="{StaticResource TextInput}"
+                         Text="{Binding TmdbApiKey, UpdateSourceTrigger=PropertyChanged}"
+                         Visibility="{Binding TmdbKeyVisible,
+                             Converter={StaticResource BoolToVisibility}}"/>
+
+                <Button Grid.Column="1"
+                        Content="{Binding TmdbKeyVisible, Converter={StaticResource BoolToEyeIcon}}"
+                        Style="{StaticResource ActionButton}"
+                        Command="{Binding ToggleTmdbKeyVisibilityCommand}"
+                        Margin="8,0,0,0" ToolTip="Show / hide key"/>
+            </Grid>
+
+            <!-- ══ MEDIA PLAYER ══ -->
+            <TextBlock Text="▶  MEDIA PLAYER" Style="{StaticResource SectionHeader}"/>
+
+            <CheckBox Style="{StaticResource ToggleStyle}"
+                      Content="Use Windows default media player"
+                      IsChecked="{Binding UseWindowsDefault}"
+                      Margin="0,0,0,10"/>
+
+            <Grid Visibility="{Binding UseWindowsDefault,
+                      Converter={StaticResource InverseBoolToVisibility}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Style="{StaticResource TextInput}"
+                         Text="{Binding MediaPlayerPath}"
+                         IsReadOnly="True" ToolTip="Select an .exe..."/>
+                <Button Grid.Column="1" Content="Browse"
+                        Style="{StaticResource ActionButton}"
+                        Command="{Binding BrowseMediaPlayerCommand}"
+                        Margin="8,0,0,0"/>
+                <Button Grid.Column="2" Content="✕"
+                        Style="{StaticResource DangerButton}"
+                        Command="{Binding ClearMediaPlayerCommand}"
+                        Margin="8,0,0,0"/>
+            </Grid>
+
+            <!-- ══ SCAN OPTIONS ══ -->
+            <TextBlock Text="🔍  SCAN OPTIONS" Style="{StaticResource SectionHeader}"/>
+
+            <CheckBox Style="{StaticResource ToggleStyle}"
+                      Content="Automatically scan on app launch"
+                      IsChecked="{Binding ScanOnLaunch}"/>
+
+            <!-- ══ APPEARANCE ══ -->
+            <TextBlock Text="🎨  APPEARANCE" Style="{StaticResource SectionHeader}"/>
+
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Theme" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox ItemsSource="{Binding AvailableThemes}"
+                              SelectedItem="{Binding SelectedTheme}"
+                              Background="#16213e" Foreground="White"
+                              BorderBrush="#0f3460" Padding="10,8" FontSize="13"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Default View Mode" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox ItemsSource="{Binding AvailableViewModes}"
+                              SelectedItem="{Binding SelectedViewMode}"
+                              Background="#16213e" Foreground="White"
+                              BorderBrush="#0f3460" Padding="10,8" FontSize="13"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- ══ SAVE ══ -->
+            <Separator Background="#0f3460" Margin="0,24,0,24"/>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="Save Settings"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding SaveCommand}"
+                        Width="140"/>
+                <TextBlock Text="{Binding SaveConfirmation}"
+                           Foreground="#4caf50" FontSize="13"
+                           VerticalAlignment="Center" Margin="16,0,0,0"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

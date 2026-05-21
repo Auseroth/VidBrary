@@ -1,0 +1,326 @@
+﻿    <Page x:Class="MediaCatalog.Views.Pages.TvShowsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:models="clr-namespace:MediaCatalog.Models"
+      Background="#1a1a2e">
+
+    <Page.Resources>
+        <Style x:Key="ToolbarCombo" TargetType="ComboBox">
+            <Setter Property="Background" Value="#16213e"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#0f3460"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="MinWidth" Value="130"/>
+        </Style>
+        <Style x:Key="FilterLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#6c757d"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="16,0,6,0"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ══ Header + Search ══ -->
+        <Grid Grid.Row="0" Margin="32,28,32,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="TV Shows"
+                       Foreground="White" FontSize="28" FontWeight="Bold"/>
+            <Border Grid.Column="1" Background="#16213e"
+                    BorderBrush="#0f3460" BorderThickness="1"
+                    CornerRadius="6" Padding="10,6">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="🔍" Foreground="#6c757d"
+                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Background="Transparent" Foreground="White"
+                             BorderThickness="0" FontSize="13" Width="220"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             CaretBrush="White"/>
+                    <Button Content="✕" Background="Transparent" BorderThickness="0"
+                            Foreground="#6c757d" Cursor="Hand" Padding="4,0"
+                            Command="{Binding ClearSearchCommand}"
+                            Visibility="{Binding SearchText, Converter={StaticResource StringToVisibility}}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ══ Toolbar ══ -->
+        <Border Grid.Row="1" Margin="32,12,32,0"
+                Background="#16213e" CornerRadius="8" Padding="12,8">
+            <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Genre" Style="{StaticResource FilterLabel}" Margin="0,0,6,0"/>
+                <ComboBox Style="{StaticResource ToolbarCombo}"
+                          ItemsSource="{Binding AvailableGenres}"
+                          SelectedItem="{Binding SelectedGenre}"/>
+                <TextBlock Text="Status" Style="{StaticResource FilterLabel}"/>
+                <ComboBox Style="{StaticResource ToolbarCombo}"
+                          ItemsSource="{Binding AvailableStatuses}"
+                          SelectedItem="{Binding SelectedStatus}"/>
+                <TextBlock Text="Match" Style="{StaticResource FilterLabel}"/>
+                <ComboBox Style="{StaticResource ToolbarCombo}"
+                          ItemsSource="{Binding MatchFilters}"
+                          SelectedItem="{Binding SelectedMatchFilter}"/>
+                <TextBlock Text="Sort" Style="{StaticResource FilterLabel}"/>
+                <ComboBox Style="{StaticResource ToolbarCombo}"
+                          ItemsSource="{Binding SortOptions}"
+                          SelectedItem="{Binding SelectedSort}"/>
+                <TextBlock Text="View" Style="{StaticResource FilterLabel}"/>
+                <ComboBox Style="{StaticResource ToolbarCombo}"
+                          ItemsSource="{Binding ViewModes}"
+                          SelectedItem="{Binding ViewMode}"
+                          MinWidth="160"/>
+            </WrapPanel>
+        </Border>
+
+        <!-- ══ Stats ══ -->
+        <TextBlock Grid.Row="2" Margin="32,8,32,8" Foreground="#6c757d" FontSize="12">
+            <Run Text="{Binding FilteredCount}"/>
+            <Run Text=" of "/>
+            <Run Text="{Binding TotalCount}"/>
+            <Run Text=" shows"/>
+        </TextBlock>
+        <ProgressBar Grid.Row="2" Height="2" VerticalAlignment="Bottom"
+                     IsIndeterminate="True" Foreground="#e94560"
+                     Background="Transparent" BorderThickness="0"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"/>
+
+        <!-- ══ Content ══ -->
+        <ContentControl Grid.Row="3" Content="{Binding}">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+
+                        <!-- Detail List -->
+                        <DataTrigger Binding="{Binding ViewMode}" Value="{x:Static models:ViewMode.DetailList}">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <ListView ItemsSource="{Binding Shows}"
+                                                  Background="Transparent" BorderThickness="0"
+                                                  Foreground="White" Margin="32,0,32,16"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                  SelectedItem="{Binding SelectedShow, Mode=TwoWay}">
+                                            <ListView.View>
+                                                <GridView>
+                                                    <GridViewColumn Header="Title"   Width="240" DisplayMemberBinding="{Binding Title}"/>
+                                                    <GridViewColumn Header="Years"   Width="90"  DisplayMemberBinding="{Binding YearDisplay}"/>
+                                                    <GridViewColumn Header="Rating"  Width="70"  DisplayMemberBinding="{Binding RatingDisplay}"/>
+                                                    <GridViewColumn Header="Seasons" Width="80"  DisplayMemberBinding="{Binding SeasonsDisplay}"/>
+                                                    <GridViewColumn Header="Status"  Width="100" DisplayMemberBinding="{Binding Status}"/>
+                                                    <GridViewColumn Header="Genre"   Width="160" DisplayMemberBinding="{Binding Genres}"/>
+                                                    <GridViewColumn Header="Match"   Width="220">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <Border CornerRadius="4" Padding="6,3"
+                                                                        Background="{Binding MatchBadgeColor}">
+                                                                    <TextBlock Text="{Binding MatchBadgeText}"
+                                                                               Foreground="White" FontSize="11"/>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                </GridView>
+                                            </ListView.View>
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                    <Setter Property="BorderBrush" Value="#16213e"/>
+                                                    <Setter Property="Padding" Value="4,8"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#16213e"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                        </ListView>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <!-- Comfortable Grid -->
+                        <DataTrigger Binding="{Binding ViewMode}" Value="{x:Static models:ViewMode.ComfortableGrid}">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding Shows}" Margin="32,0,32,24">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Width="160" Margin="0,0,16,16"
+                                                                Background="#16213e" CornerRadius="8" Cursor="Hand">
+                                                            <Border.InputBindings>
+                                                                <MouseBinding MouseAction="LeftClick"
+                                                                    Command="{Binding DataContext.OpenShowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            </Border.InputBindings>
+                                                            <StackPanel>
+                                                                <Border CornerRadius="8,8,0,0" Height="230" ClipToBounds="True">
+                                                                    <Grid>
+                                                                        <Rectangle Fill="#0f3460"/>
+                                                                        <TextBlock Text="📺" FontSize="40"
+                                                                                   HorizontalAlignment="Center"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Foreground="#16213e"/>
+                                                                        <Image Stretch="UniformToFill"
+                                                                               Source="{Binding PosterPath}"/>
+                                                                    </Grid>
+                                                                </Border>
+                                                                <Border Padding="10,8,10,10">
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="{Binding Title}"
+                                                                                   Foreground="White" FontSize="13"
+                                                                                   FontWeight="SemiBold"
+                                                                                   TextTrimming="CharacterEllipsis"
+                                                                                   TextWrapping="Wrap" MaxHeight="38"/>
+                                                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                                            <TextBlock Text="{Binding YearDisplay}" Foreground="#6c757d" FontSize="12"/>
+                                                                            <TextBlock Text=" · " Foreground="#6c757d" FontSize="12"/>
+                                                                            <TextBlock Text="{Binding RatingDisplay}" Foreground="#f59e0b" FontSize="12"/>
+                                                                        </StackPanel>
+                                                                        <TextBlock Text="{Binding SeasonsDisplay}"
+                                                                                   Foreground="#adb5bd" FontSize="11" Margin="0,2,0,0"/>
+                                                                        <Border CornerRadius="4" Padding="5,2"
+                                                                                Margin="0,6,0,0" HorizontalAlignment="Left"
+                                                                                Background="{Binding MatchBadgeColor}">
+                                                                            <TextBlock Text="{Binding MatchBadgeText}" Foreground="White" FontSize="10"/>
+                                                                        </Border>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <!-- Compact Grid -->
+                        <DataTrigger Binding="{Binding ViewMode}" Value="{x:Static models:ViewMode.CompactGrid}">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding Shows}" Margin="32,0,32,24">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Width="110" Margin="0,0,12,12"
+                                                                Background="#16213e" CornerRadius="6" Cursor="Hand">
+                                                            <Border.InputBindings>
+                                                                <MouseBinding MouseAction="LeftClick"
+                                                                    Command="{Binding DataContext.OpenShowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            </Border.InputBindings>
+                                                            <StackPanel>
+                                                                <Border CornerRadius="6,6,0,0" Height="155" ClipToBounds="True">
+                                                                    <Grid>
+                                                                        <Rectangle Fill="#0f3460"/>
+                                                                        <Image Stretch="UniformToFill"
+                                                                               Source="{Binding PosterPath}"/>
+                                                                    </Grid>
+                                                                </Border>
+                                                                <TextBlock Text="{Binding Title}"
+                                                                           Foreground="White" FontSize="11"
+                                                                           Padding="6" TextTrimming="CharacterEllipsis"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <!-- Banner View -->
+                        <DataTrigger Binding="{Binding ViewMode}" Value="{x:Static models:ViewMode.BannerView}">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding Shows}" Margin="32,0,32,24">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Margin="0,0,0,8" CornerRadius="8"
+                                                                Background="#16213e" Cursor="Hand"
+                                                                ClipToBounds="True" Height="80">
+                                                            <Border.InputBindings>
+                                                                <MouseBinding MouseAction="LeftClick"
+                                                                    Command="{Binding DataContext.OpenShowCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            </Border.InputBindings>
+                                                            <Grid>
+                                                                <Image Stretch="UniformToFill" Opacity="0.25"
+                                                                       Source="{Binding PosterPath}"/>
+                                                                <StackPanel Orientation="Horizontal"
+                                                                            VerticalAlignment="Center" Margin="16,0">
+                                                                    <TextBlock Text="{Binding Title}" Foreground="White"
+                                                                               FontSize="16" FontWeight="SemiBold"
+                                                                               VerticalAlignment="Center"/>
+                                                                    <TextBlock Text="{Binding YearDisplay}" Foreground="#adb5bd"
+                                                                               FontSize="13" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                                                    <TextBlock Text="{Binding SeasonsDisplay}" Foreground="#adb5bd"
+                                                                               FontSize="13" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                                                    <TextBlock Text="{Binding RatingDisplay}" Foreground="#f59e0b"
+                                                                               FontSize="13" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                                                    <TextBlock Text="{Binding Status}" Foreground="#6c757d"
+                                                                               FontSize="12" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                                                    <Border CornerRadius="4" Padding="6,3" Margin="16,0,0,0"
+                                                                            Background="{Binding MatchBadgeColor}">
+                                                                        <TextBlock Text="{Binding MatchBadgeText}" Foreground="White" FontSize="11"/>
+                                                                    </Border>
+                                                                </StackPanel>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+
+        <!-- ══ Empty state ══ -->
+        <StackPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Visibility="{Binding Shows.Count, Converter={StaticResource ZeroToVisibility}}">
+            <TextBlock Text="📺" FontSize="64" HorizontalAlignment="Center"/>
+            <TextBlock Text="No TV shows found" Foreground="White"
+                       FontSize="20" FontWeight="SemiBold"
+                       HorizontalAlignment="Center" Margin="0,16,0,8"/>
+            <TextBlock Foreground="#6c757d" FontSize="14" HorizontalAlignment="Center"
+                       Text="Add a TV shows directory in Settings and run a scan."/>
+        </StackPanel>
+
+    </Grid>
+</Page>

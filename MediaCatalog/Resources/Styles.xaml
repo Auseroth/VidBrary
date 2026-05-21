@@ -1,0 +1,51 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:MediaCatalog.Converters">
+
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility"/>
+    <converters:BoolToEyeIconConverter           x:Key="BoolToEyeIcon"/>
+    <converters:BoolToChevronConverter           x:Key="BoolToChevron"/>
+    <converters:StringToVisibilityConverter      x:Key="StringToVisibility"/>
+    <converters:ZeroToVisibilityConverter        x:Key="ZeroToVisibility"/>
+    <converters:NonZeroToVisibilityConverter     x:Key="NonZeroToVisibility"/>
+
+    <Style x:Key="SidebarButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#adb5bd"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bg" Background="{TemplateBinding Background}"
+                            CornerRadius="6" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="#0f3460"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="#e94560"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="StatCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="#16213e"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="24,20"/>
+        <Setter Property="MinWidth" Value="160"/>
+    </Style>
+
+</ResourceDictionary>
