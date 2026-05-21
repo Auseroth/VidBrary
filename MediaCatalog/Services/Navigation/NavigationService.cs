@@ -26,14 +26,10 @@ public class NavigationService(IServiceProvider services) : INavigationService
         // Resolve the ViewModel from DI
         var viewModel = (ViewModelBase)services.GetRequiredService(viewModelType);
 
-        // Resolve the matching View by convention: MoviesViewModel → MoviesPage
-        var viewTypeName = viewModelType.FullName!
-            .Replace(".ViewModels.", ".Views.Pages.")
-            .Replace("ViewModel", "Page");
-
-        var viewType = Type.GetType(viewTypeName)
+        var viewType = ResolveViewType(viewModelType)
             ?? throw new InvalidOperationException(
-                $"No View found for {viewModelType.Name}. Expected: {viewTypeName}");
+                $"No View found for {viewModelType.Name}. Expected view name: " +
+                $"{viewModelType.Name.Replace("ViewModel", "Page")} in MediaCatalog.Views.Pages");
 
         var page = (Page)Activator.CreateInstance(viewType)!;
         page.DataContext = viewModel;
@@ -42,6 +38,15 @@ public class NavigationService(IServiceProvider services) : INavigationService
         _history.Push((viewModelType, parameter));
 
         _ = viewModel.OnNavigatedToAsync(parameter);
+    }
+
+    private static Type? ResolveViewType(Type viewModelType)
+    {
+        var pageName = viewModelType.Name.Replace("ViewModel", "Page");
+        var fullViewName = $"MediaCatalog.Views.Pages.{pageName}";
+
+        // Search the assembly that contains the views
+        return typeof(NavigationService).Assembly.GetType(fullViewName);
     }
 
     public void GoBack()

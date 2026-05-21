@@ -8,7 +8,12 @@
     <UseWPF>true</UseWPF>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>NU1605</NoWarn>
+    <ApplicationIcon>playwave.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="playwave.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Common" Version="8.4.2" />
@@ -30,6 +35,12 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="TMDbLib" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\playwave.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

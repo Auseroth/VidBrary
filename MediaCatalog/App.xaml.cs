@@ -18,7 +18,7 @@ public partial class App : Application
 {
     private static readonly string DataDirectory = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-        "MediaCatalog");
+        "NasCastr");
 
     public static IServiceProvider Services { get; private set; } = null!;
     private readonly IHost _host;
@@ -68,6 +68,7 @@ public partial class App : Application
         services.AddTransient<TagsViewModel>();
         services.AddSingleton<ProfilesViewModel>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<MyListViewModel>();
 
         services.AddTransient<MainWindow>();
     }

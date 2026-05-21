@@ -3,6 +3,7 @@ using System;
 using MediaCatalog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediaCatalog.Migrations
 {
     [DbContext(typeof(MediaCatalogDbContext))]
-    partial class MediaCatalogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260521145655_AddMyList")]
+    partial class AddMyList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -629,35 +632,6 @@ namespace MediaCatalog.Migrations
                     b.ToTable("WatchHistory");
                 });
 
-            modelBuilder.Entity("MyListItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("AddedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("MovieId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("TvShowId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UserProfileId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("TvShowId");
-
-                    b.HasIndex("UserProfileId");
-
-                    b.ToTable("MyList");
-                });
-
             modelBuilder.Entity("MediaCatalog.Models.Episode", b =>
                 {
                     b.HasOne("MediaCatalog.Models.Season", "Season")
@@ -887,31 +861,6 @@ namespace MediaCatalog.Migrations
                     b.Navigation("UserProfile");
                 });
 
-            modelBuilder.Entity("MyListItem", b =>
-                {
-                    b.HasOne("MediaCatalog.Models.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("MediaCatalog.Models.TvShow", "TvShow")
-                        .WithMany()
-                        .HasForeignKey("TvShowId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("MediaCatalog.Models.UserProfile", "UserProfile")
-                        .WithMany("MyList")
-                        .HasForeignKey("UserProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("TvShow");
-
-                    b.Navigation("UserProfile");
-                });
-
             modelBuilder.Entity("MediaCatalog.Models.Episode", b =>
                 {
                     b.Navigation("Ratings");
@@ -977,8 +926,6 @@ namespace MediaCatalog.Migrations
 
             modelBuilder.Entity("MediaCatalog.Models.UserProfile", b =>
                 {
-                    b.Navigation("MyList");
-
                     b.Navigation("Ratings");
 
                     b.Navigation("WatchHistory");

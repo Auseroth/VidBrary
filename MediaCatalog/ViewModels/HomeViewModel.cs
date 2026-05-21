@@ -2,12 +2,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaCatalog.Data;
+using MediaCatalog.Models;
 using MediaCatalog.Services.Navigation;
 using MediaCatalog.Services.Settings;
+using MediaCatalog.ViewModels;
 using MediaCatalog.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
-
-namespace MediaCatalog.ViewModels;
 
 public partial class HomeViewModel(
     MediaCatalogDbContext db,
@@ -22,16 +22,25 @@ public partial class HomeViewModel(
     [ObservableProperty] private string _totalRuntime = "—";
     [ObservableProperty] private int _pendingMatches;
 
+    // ── Continue Watching ─────────────────────────────────────────────────────
+    [ObservableProperty]
+    private ObservableCollection<RecentlyWatchedViewModel> _continueWatching = [];
+
     // ── Recently Added ────────────────────────────────────────────────────────
     [ObservableProperty]
     private ObservableCollection<MovieListItemViewModel> _recentMovies = [];
-
     [ObservableProperty]
     private ObservableCollection<TvShowListItemViewModel> _recentShows = [];
 
-    // ── Random pick ───────────────────────────────────────────────────────────
+    // ── My List spotlight ─────────────────────────────────────────────────────
+    [ObservableProperty]
+    private ObservableCollection<MyListSpotlightItem> _myListSpotlight = [];
+
+    // ── Random picks ─────────────────────────────────────────────────────────
     [ObservableProperty] private MovieListItemViewModel? _randomMovie;
     [ObservableProperty] private bool _showRandomMovie;
+    [ObservableProperty] private TvShowListItemViewModel? _randomShow;
+    [ObservableProperty] private bool _showRandomShow;
 
     public ScanViewModel ScanViewModel => scanViewModel;
 
@@ -45,13 +54,13 @@ public partial class HomeViewModel(
     {
         IsBusy = true;
 
-        TotalMovies   = await db.Movies.CountAsync();
-        TotalShows    = await db.TvShows.CountAsync();
-        TotalEpisodes = await db.Episodes.CountAsync();
-        PendingMatches = await db.Movies.CountAsync(
-                             m => m.MatchStatus == Models.MatchStatus.PendingSelection)
-                       + await db.TvShows.CountAsync(
-                             s => s.MatchStatus == Models.MatchStatus.PendingSelection);
+        var profileId = settingsService.Current.ActiveProfileId;
+
+        TotalMovies    = await db.Movies.CountAsync();
+        TotalShows     = await db.TvShows.CountAsync();
+        TotalEpisodes  = await db.Episodes.CountAsync();
+        PendingMatches = await db.Movies.CountAsync(m => m.MatchStatus == MatchStatus.PendingSelection)
+                       + await db.TvShows.CountAsync(s => s.MatchStatus == MatchStatus.PendingSelection);
 
         var movieMinutes = await db.Movies.SumAsync(m => (int?)m.RuntimeMinutes ?? 0);
         var epMinutes    = await db.Episodes.SumAsync(e => (int?)e.RuntimeMinutes ?? 0);
@@ -60,7 +69,22 @@ public partial class HomeViewModel(
             ? $"{(int)span.TotalDays}d {span.Hours}h"
             : $"{span.Hours}h {span.Minutes}m";
 
-        // Recently added — last 12 movies
+        // ── Continue Watching ─────────────────────────────────────────────────
+        var recentWatches = await db.WatchHistory
+            .Where(w => w.UserProfileId == profileId && !w.Completed)
+            .Include(w => w.Movie)
+            .Include(w => w.Episode).ThenInclude(e => e!.Season).ThenInclude(s => s.TvShow)
+            .OrderByDescending(w => w.WatchedAt)
+            .Take(10)
+            .AsNoTracking()
+            .ToListAsync();
+
+        ContinueWatching = new ObservableCollection<RecentlyWatchedViewModel>(
+            recentWatches
+                .Where(w => w.Movie != null || w.Episode?.Season?.TvShow != null)
+                .Select(w => new RecentlyWatchedViewModel(w)));
+
+        // ── Recently Added ────────────────────────────────────────────────────
         var recentMovies = await db.Movies
             .Include(m => m.Genres).ThenInclude(g => g.Genre)
             .Include(m => m.Tags).ThenInclude(t => t.UserTag)
@@ -72,7 +96,6 @@ public partial class HomeViewModel(
         RecentMovies = new ObservableCollection<MovieListItemViewModel>(
             recentMovies.Select(MovieListItemViewModel.FromMovie));
 
-        // Recently added — last 8 shows
         var recentShows = await db.TvShows
             .Include(s => s.Genres).ThenInclude(g => g.Genre)
             .Include(s => s.Tags).ThenInclude(t => t.UserTag)
@@ -83,30 +106,58 @@ public partial class HomeViewModel(
         RecentShows = new ObservableCollection<TvShowListItemViewModel>(
             recentShows.Select(TvShowListItemViewModel.FromShow));
 
+        // ── My List spotlight ─────────────────────────────────────────────────
+        var myListItems = await db.MyList
+            .Where(m => m.UserProfileId == profileId)
+            .Include(m => m.Movie)
+            .Include(m => m.TvShow)
+            .AsNoTracking()
+            .ToListAsync();
+
+        MyListSpotlight = new ObservableCollection<MyListSpotlightItem>(
+            myListItems
+                .OrderBy(_ => Random.Shared.Next())
+                .Take(10)
+                .Select(m => new MyListSpotlightItem(m)));
+
         ShowRandomMovie = false;
+        ShowRandomShow  = false;
         IsBusy = false;
     }
 
-    // ── Random pick ───────────────────────────────────────────────────────────
+    // ── Random picks ─────────────────────────────────────────────────────────
 
     [RelayCommand]
     private async Task PickRandomMovieAsync()
     {
         var count = await db.Movies.CountAsync();
         if (count == 0) return;
-
-        var skip = Random.Shared.Next(count);
         var movie = await db.Movies
             .Include(m => m.Genres).ThenInclude(g => g.Genre)
             .Include(m => m.Tags).ThenInclude(t => t.UserTag)
             .Include(m => m.Collection)
             .AsNoTracking()
-            .Skip(skip)
+            .Skip(Random.Shared.Next(count))
             .FirstOrDefaultAsync();
-
         if (movie is null) return;
-        RandomMovie    = MovieListItemViewModel.FromMovie(movie);
+        RandomMovie     = MovieListItemViewModel.FromMovie(movie);
         ShowRandomMovie = true;
+    }
+
+    [RelayCommand]
+    private async Task PickRandomShowAsync()
+    {
+        var count = await db.TvShows.CountAsync();
+        if (count == 0) return;
+        var show = await db.TvShows
+            .Include(s => s.Genres).ThenInclude(g => g.Genre)
+            .Include(s => s.Tags).ThenInclude(t => t.UserTag)
+            .AsNoTracking()
+            .Skip(Random.Shared.Next(count))
+            .FirstOrDefaultAsync();
+        if (show is null) return;
+        RandomShow     = TvShowListItemViewModel.FromShow(show);
+        ShowRandomShow = true;
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────
@@ -120,10 +171,31 @@ public partial class HomeViewModel(
         navigation.NavigateTo<TvShowDetailViewModel>(item.Id);
 
     [RelayCommand]
+    private void OpenMyListItem(MyListSpotlightItem item)
+    {
+        if (item.MovieId.HasValue)
+            navigation.NavigateTo<MovieDetailViewModel>(item.MovieId.Value);
+        else if (item.TvShowId.HasValue)
+            navigation.NavigateTo<TvShowDetailViewModel>(item.TvShowId.Value);
+    }
+
+    [RelayCommand]
+    private void OpenWatchHistoryItem(RecentlyWatchedViewModel item)
+    {
+        if (item.MovieId.HasValue)
+            navigation.NavigateTo<MovieDetailViewModel>(item.MovieId.Value);
+        else if (item.TvShowId.HasValue)
+            navigation.NavigateTo<TvShowDetailViewModel>(item.TvShowId.Value);
+    }
+
+    [RelayCommand]
     private void GoToMovies() => navigation.NavigateTo<MoviesViewModel>();
 
     [RelayCommand]
     private void GoToShows() => navigation.NavigateTo<TvShowsViewModel>();
+
+    [RelayCommand]
+    private void GoToMyList() => navigation.NavigateTo<MyListViewModel>();
 
     [RelayCommand]
     private void GoToActionNeeded() =>

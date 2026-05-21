@@ -6,14 +6,6 @@
       Background="#1a1a2e">
 
     <Page.Resources>
-        <Style x:Key="ToolbarCombo" TargetType="ComboBox">
-            <Setter Property="Background" Value="#16213e"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#0f3460"/>
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="MinWidth" Value="130"/>
-        </Style>
         <Style x:Key="FilterLabel" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#6c757d"/>
             <Setter Property="FontSize" Value="12"/>
@@ -82,21 +74,17 @@
                 Background="#16213e" CornerRadius="8" Padding="12,8">
             <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="Genre" Style="{StaticResource FilterLabel}" Margin="0,0,6,0"/>
-                <ComboBox Style="{StaticResource ToolbarCombo}"
-                          ItemsSource="{Binding AvailableGenres}"
+                <ComboBox ItemsSource="{Binding AvailableGenres}"
                           SelectedItem="{Binding SelectedGenre}"/>
                 <TextBlock Text="Match" Style="{StaticResource FilterLabel}"/>
-                <ComboBox Style="{StaticResource ToolbarCombo}"
-                          ItemsSource="{Binding MatchFilters}"
+                <ComboBox ItemsSource="{Binding MatchFilters}"
                           SelectedItem="{Binding SelectedMatchFilter}"/>
                 <TextBlock Text="Sort" Style="{StaticResource FilterLabel}"/>
-                <ComboBox Style="{StaticResource ToolbarCombo}"
-                          ItemsSource="{Binding SortOptions}"
+                <ComboBox ItemsSource="{Binding SortOptions}"
                           SelectedItem="{Binding SelectedSort}"/>
                 <StackPanel Orientation="Horizontal" Margin="16,0,0,0">
                     <TextBlock Text="View" Style="{StaticResource FilterLabel}"/>
-                    <ComboBox Style="{StaticResource ToolbarCombo}"
-                              ItemsSource="{Binding ViewModes}"
+                    <ComboBox ItemsSource="{Binding ViewModes}"
                               SelectedItem="{Binding ViewMode}"
                               MinWidth="160"/>
                 </StackPanel>

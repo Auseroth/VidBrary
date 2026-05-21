@@ -1,18 +1,10 @@
-﻿    <Page x:Class="MediaCatalog.Views.Pages.TvShowsPage"
+﻿<Page x:Class="MediaCatalog.Views.Pages.TvShowsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:models="clr-namespace:MediaCatalog.Models"
       Background="#1a1a2e">
 
     <Page.Resources>
-        <Style x:Key="ToolbarCombo" TargetType="ComboBox">
-            <Setter Property="Background" Value="#16213e"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#0f3460"/>
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="MinWidth" Value="130"/>
-        </Style>
         <Style x:Key="FilterLabel" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#6c757d"/>
             <Setter Property="FontSize" Value="12"/>
@@ -60,24 +52,23 @@
                 Background="#16213e" CornerRadius="8" Padding="12,8">
             <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="Genre" Style="{StaticResource FilterLabel}" Margin="0,0,6,0"/>
-                <ComboBox Style="{StaticResource ToolbarCombo}"
-                          ItemsSource="{Binding AvailableGenres}"
-                          SelectedItem="{Binding SelectedGenre}"/>
+                <ComboBox ItemsSource="{Binding AvailableGenres}"
+                          SelectedItem="{Binding SelectedGenre}"
+                          MinWidth="130"/>
                 <TextBlock Text="Status" Style="{StaticResource FilterLabel}"/>
-                <ComboBox Style="{StaticResource ToolbarCombo}"
-                          ItemsSource="{Binding AvailableStatuses}"
-                          SelectedItem="{Binding SelectedStatus}"/>
+                <ComboBox ItemsSource="{Binding AvailableStatuses}"
+                          SelectedItem="{Binding SelectedStatus}"
+                          MinWidth="130"/>
                 <TextBlock Text="Match" Style="{StaticResource FilterLabel}"/>
-                <ComboBox Style="{StaticResource ToolbarCombo}"
-                          ItemsSource="{Binding MatchFilters}"
-                          SelectedItem="{Binding SelectedMatchFilter}"/>
+                <ComboBox ItemsSource="{Binding MatchFilters}"
+                          SelectedItem="{Binding SelectedMatchFilter}"
+                          MinWidth="130"/>
                 <TextBlock Text="Sort" Style="{StaticResource FilterLabel}"/>
-                <ComboBox Style="{StaticResource ToolbarCombo}"
-                          ItemsSource="{Binding SortOptions}"
-                          SelectedItem="{Binding SelectedSort}"/>
+                <ComboBox ItemsSource="{Binding SortOptions}"
+                          SelectedItem="{Binding SelectedSort}"
+                          MinWidth="130"/>
                 <TextBlock Text="View" Style="{StaticResource FilterLabel}"/>
-                <ComboBox Style="{StaticResource ToolbarCombo}"
-                          ItemsSource="{Binding ViewModes}"
+                <ComboBox ItemsSource="{Binding ViewModes}"
                           SelectedItem="{Binding ViewMode}"
                           MinWidth="160"/>
             </WrapPanel>

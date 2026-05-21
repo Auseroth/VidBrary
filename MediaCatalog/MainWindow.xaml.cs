@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using MediaCatalog.Services.Navigation;
 using MediaCatalog.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,17 +16,26 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        MainViewModel    = App.Services.GetRequiredService<MainViewModel>();
-        ScanViewModel    = App.Services.GetRequiredService<ScanViewModel>();
+        MainViewModel     = App.Services.GetRequiredService<MainViewModel>();
+        ScanViewModel     = App.Services.GetRequiredService<ScanViewModel>();
         ProfilesViewModel = App.Services.GetRequiredService<ProfilesViewModel>();
 
         DataContext = this;
 
-        // Wire the navigation frame
-        var nav = App.Services.GetRequiredService<INavigationService>() as Services.Navigation.NavigationService;
+        var nav = App.Services.GetRequiredService<INavigationService>() as NavigationService;
         nav?.SetFrame(MainFrame);
 
-        // Start on Home
         MainViewModel.NavigateHomeCommand.Execute(null);
     }
+
+    private void MinimizeButton_Click(object sender, RoutedEventArgs e) =>
+        WindowState = WindowState.Minimized;
+
+    private void MaximizeButton_Click(object sender, RoutedEventArgs e) =>
+        WindowState = WindowState == WindowState.Maximized
+            ? WindowState.Normal
+            : WindowState.Maximized;
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e) =>
+        Close();
 }

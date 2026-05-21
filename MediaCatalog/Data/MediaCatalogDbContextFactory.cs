@@ -11,7 +11,7 @@ public class MediaCatalogDbContextFactory : IDesignTimeDbContextFactory<MediaCat
     {
         var dbPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "MediaCatalog",
+            "NasCastr",
             "catalog.db");
 
         var options = new DbContextOptionsBuilder<MediaCatalogDbContext>()

@@ -1,5 +1,5 @@
-using MediaCatalog.Models;
 using Microsoft.EntityFrameworkCore;
+using MediaCatalog.Models;
 
 namespace MediaCatalog.Data;
 
@@ -17,10 +17,10 @@ public class MediaCatalogDbContext(DbContextOptions<MediaCatalogDbContext> optio
     public DbSet<WatchHistory> WatchHistory => Set<WatchHistory>();
     public DbSet<UserRating> Ratings => Set<UserRating>();
     public DbSet<TmdbCandidate> TmdbCandidates => Set<TmdbCandidate>();
+    public DbSet<MyListItem> MyList => Set<MyListItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Composite keys for join tables
         modelBuilder.Entity<MovieGenre>().HasKey(e => new { e.MovieId, e.GenreId });
         modelBuilder.Entity<TvShowGenre>().HasKey(e => new { e.TvShowId, e.GenreId });
         modelBuilder.Entity<MovieTag>().HasKey(e => new { e.MovieId, e.UserTagId });
@@ -29,7 +29,6 @@ public class MediaCatalogDbContext(DbContextOptions<MediaCatalogDbContext> optio
         modelBuilder.Entity<MovieCrew>().HasKey(e => new { e.MovieId, e.PersonId, e.Job });
         modelBuilder.Entity<TvShowCast>().HasKey(e => new { e.TvShowId, e.PersonId });
 
-        // Prevent cascade delete cycles
         modelBuilder.Entity<WatchHistory>()
             .HasOne(w => w.Movie).WithMany(m => m.WatchHistory)
             .HasForeignKey(w => w.MovieId).OnDelete(DeleteBehavior.SetNull);
@@ -45,5 +44,13 @@ public class MediaCatalogDbContext(DbContextOptions<MediaCatalogDbContext> optio
         modelBuilder.Entity<UserRating>()
             .HasOne(r => r.Episode).WithMany(e => e.Ratings)
             .HasForeignKey(r => r.EpisodeId).OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<MyListItem>()
+            .HasOne(m => m.Movie).WithMany()
+            .HasForeignKey(m => m.MovieId).OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<MyListItem>()
+            .HasOne(m => m.TvShow).WithMany()
+            .HasForeignKey(m => m.TvShowId).OnDelete(DeleteBehavior.SetNull);
     }
 }

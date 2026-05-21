@@ -19,6 +19,7 @@ public partial class MainViewModel(
     [RelayCommand] private void NavigateTags()        => navigationService.NavigateTo<TagsViewModel>();
     [RelayCommand] private void NavigateSettings()    => navigationService.NavigateTo<SettingsViewModel>();
     [RelayCommand] private void NavigateProfiles()    => navigationService.NavigateTo<ProfilesViewModel>();
+    [RelayCommand] private void NavigateMyList()      => navigationService.NavigateTo<MyListViewModel>();
 
     [RelayCommand]
     private void GoBack()

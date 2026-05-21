@@ -9,4 +9,5 @@ public class UserProfile
 
     public ICollection<WatchHistory> WatchHistory { get; set; } = [];
     public ICollection<UserRating> Ratings { get; set; } = [];
+    public ICollection<MyListItem> MyList { get; set; } = [];
 }
