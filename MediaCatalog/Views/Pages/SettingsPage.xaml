@@ -127,6 +127,13 @@
                     <TextBlock Text="{Binding DbOperationStatus}"
                                Foreground="#4caf50" FontSize="12" TextWrapping="Wrap"
                                Visibility="{Binding DbOperationStatus, Converter={StaticResource NullToCollapsed}}"/>
+                    <!-- Download Update — only visible after update check finds a newer version -->
+                    <Button Content="⬇  Download Update"
+         Style="{StaticResource PrimaryButton}"
+         Command="{Binding DownloadUpdateCommand}"
+         IsEnabled="{Binding IsDownloadingUpdate, Converter={StaticResource InverseBool}}"
+         Visibility="{Binding PendingAssetUrl, Converter={StaticResource NullToCollapsed}}"
+         Margin="0,0,12,8"/>
                 </StackPanel>
             </Border>
 

@@ -1,18 +1,17 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using VidBrary.Data;
 using VidBrary.Models;
 using VidBrary.Services.Scanner;
 using VidBrary.Services.Settings;
 using VidBrary.Services.Theme;
 using VidBrary.Services.Tmdb;
 using VidBrary.ViewModels.Base;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
@@ -77,6 +76,8 @@ public partial class SettingsViewModel(
     // ── Update ────────────────────────────────────────────────────────────────
     [ObservableProperty] private string? _updateStatus;
     [ObservableProperty] private bool _isCheckingUpdate;
+    [ObservableProperty] private bool _isDownloadingUpdate;
+    [ObservableProperty] private string? _pendingAssetUrl;
 
     // ── DB Operations ─────────────────────────────────────────────────────────
     [ObservableProperty] private string? _dbOperationStatus;
@@ -229,6 +230,7 @@ public partial class SettingsViewModel(
     {
         if (IsCheckingUpdate) return;
         IsCheckingUpdate = true;
+        PendingAssetUrl = null;
         UpdateStatus = "Checking for updates…";
 
         var current = Assembly.GetExecutingAssembly()
@@ -244,14 +246,13 @@ public partial class SettingsViewModel(
 
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                UpdateStatus = $"✅ Cannot reach Repo for update ( you are on v{current})";
+                UpdateStatus = $"✅ Cannot Reach the Repo for Update  (v{current})";
                 return;
             }
 
             response.EnsureSuccessStatusCode();
 
-            var release = await response.Content
-                .ReadFromJsonAsync<GitHubRelease>();
+            var release = await response.Content.ReadFromJsonAsync<GitHubRelease>();
 
             if (release is null)
             {
@@ -265,11 +266,21 @@ public partial class SettingsViewModel(
                 Version.TryParse(current,   out var running) &&
                 latest > running)
             {
-                UpdateStatus = $"🆕 Update available: v{latestTag}  (you have v{current})  —  {release.HtmlUrl}";
+                // Find the first .exe or .msi asset
+                var asset = release.Assets
+                    ?.FirstOrDefault(a =>
+                        a.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
+                        a.Name.EndsWith(".msi", StringComparison.OrdinalIgnoreCase));
+
+                PendingAssetUrl = asset?.BrowserDownloadUrl ?? release.HtmlUrl;
+
+                UpdateStatus = asset is not null
+                    ? $"🆕 Update available: v{latestTag}  (you have v{current})  —  click Download to install"
+                    : $"🆕 Update available: v{latestTag}  (you have v{current})  —  no installer asset found, opening release page";
             }
             else
             {
-                UpdateStatus = $"✅ No new version available  (latest: v{latestTag}  |  you have v{current})";
+                UpdateStatus = $"✅ You are on the latest version  (v{latestTag})";
             }
         }
         catch (Exception ex)
@@ -280,6 +291,47 @@ public partial class SettingsViewModel(
         finally
         {
             IsCheckingUpdate = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task DownloadUpdateAsync()
+    {
+        if (PendingAssetUrl is null || IsDownloadingUpdate) return;
+
+        // If it's a release page URL (no installer asset) just open the browser
+        if (!PendingAssetUrl.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) &&
+            !PendingAssetUrl.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
+        {
+            Process.Start(new ProcessStartInfo(PendingAssetUrl) { UseShellExecute = true });
+            return;
+        }
+
+        IsDownloadingUpdate = true;
+        UpdateStatus = "Downloading update…";
+
+        try
+        {
+            var fileName = Path.GetFileName(new Uri(PendingAssetUrl).LocalPath);
+            var dest = Path.Combine(Path.GetTempPath(), fileName);
+
+            using var http = new HttpClient();
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("VidBrary-UpdateCheck/1.0");
+
+            var bytes = await http.GetByteArrayAsync(PendingAssetUrl);
+            await File.WriteAllBytesAsync(dest, bytes);
+
+            UpdateStatus = "✅ Downloaded — launching installer…";
+
+            Process.Start(new ProcessStartInfo(dest) { UseShellExecute = true });
+            await Task.Delay(1500);
+            System.Windows.Application.Current.Shutdown();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Update download failed");
+            UpdateStatus = $"⚠ Download failed: {ex.Message}";
+            IsDownloadingUpdate = false;
         }
     }
 
@@ -389,8 +441,6 @@ public partial class SettingsViewModel(
 
         ThemeService.Apply(s);
 
-        // If a TMDB key was just added for the first time, kick off enrichment
-        // in the background using a dedicated scope so it never touches the UI DbContext
         var keyAdded = string.IsNullOrWhiteSpace(previousKey)
                     && !string.IsNullOrWhiteSpace(s.TmdbApiKey);
         if (keyAdded)
@@ -428,9 +478,14 @@ public partial class SettingsViewModel(
         return dialog.ShowDialog() == true ? dialog.FolderName : null;
     }
 
-    // ── GitHub release DTO ────────────────────────────────────────────────────
+    // ── GitHub release DTOs ───────────────────────────────────────────────────
 
     private sealed record GitHubRelease(
         [property: System.Text.Json.Serialization.JsonPropertyName("tag_name")]  string? TagName,
-        [property: System.Text.Json.Serialization.JsonPropertyName("html_url")]  string? HtmlUrl);
+        [property: System.Text.Json.Serialization.JsonPropertyName("html_url")]  string? HtmlUrl,
+        [property: System.Text.Json.Serialization.JsonPropertyName("assets")]    List<GitHubAsset>? Assets);
+
+    private sealed record GitHubAsset(
+        [property: System.Text.Json.Serialization.JsonPropertyName("name")]                  string Name,
+        [property: System.Text.Json.Serialization.JsonPropertyName("browser_download_url")]  string BrowserDownloadUrl);
 }
