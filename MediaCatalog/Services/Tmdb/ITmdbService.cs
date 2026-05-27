@@ -1,6 +1,6 @@
-using MediaCatalog.Models;
+using VidBrary.Models;
 
-namespace MediaCatalog.Services.Tmdb;
+namespace VidBrary.Services.Tmdb;
 
 public interface ITmdbService
 {

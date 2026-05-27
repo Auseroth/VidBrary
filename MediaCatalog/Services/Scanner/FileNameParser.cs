@@ -1,4 +1,4 @@
-﻿namespace MediaCatalog.Services.Scanner;
+﻿namespace VidBrary.Services.Scanner;
 
 /// <summary>
 /// Parses media filenames into a clean title and optional year / episode info.

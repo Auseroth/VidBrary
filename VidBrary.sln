@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.37111.16 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaCatalog", "MediaCatalog\MediaCatalog.csproj", "{797A4361-7731-4376-A995-83A212A37FC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidBrary", "MediaCatalog\vidbrary.csproj", "{797A4361-7731-4376-A995-83A212A37FC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

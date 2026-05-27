@@ -1,6 +1,6 @@
-﻿using MediaCatalog.Models;
+﻿using VidBrary.Models;
 
-namespace MediaCatalog.Services.Settings;
+namespace VidBrary.Services.Settings;
 
 public class AppSettings
 {

@@ -1,15 +1,15 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using MediaCatalog.Data;
-using MediaCatalog.Models;
-using MediaCatalog.Services.Settings;
+using VidBrary.Data;
+using VidBrary.Models;
+using VidBrary.Services.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace MediaCatalog.Services.Scanner;
+namespace VidBrary.Services.Scanner;
 
 public class ScannerService(
-    MediaCatalogDbContext db,
+    VidBraryDbContext db,
     ISettingsService settingsService,
     ILogger<ScannerService> logger) : IScannerService
 {

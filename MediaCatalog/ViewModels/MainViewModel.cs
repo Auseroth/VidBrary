@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaCatalog.Services.Navigation;
-using MediaCatalog.Services.Settings;
+using VidBrary.Services.Navigation;
+using VidBrary.Services.Settings;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public partial class MainViewModel(
     INavigationService navigationService,

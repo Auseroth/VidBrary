@@ -1,13 +1,13 @@
-﻿using MediaCatalog.Data;
+﻿using VidBrary.Data;
 using MediaInfo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MI = MediaInfo.MediaInfo;
 
-namespace MediaCatalog.Services.MediaInfo;
+namespace VidBrary.Services.MediaInfo;
 
 public class MediaInfoService(
-    MediaCatalogDbContext db,
+    VidBraryDbContext db,
     ILogger<MediaInfoService> logger) : IMediaInfoService
 {
     public async Task EnrichAllAsync(IProgress<string>? progress = null,

@@ -1,4 +1,4 @@
-namespace MediaCatalog.Services.Scanner;
+namespace VidBrary.Services.Scanner;
 
 public interface IScannerService
 {

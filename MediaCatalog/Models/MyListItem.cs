@@ -1,4 +1,4 @@
-using MediaCatalog.Models;
+using VidBrary.Models;
 
 public class MyListItem
 {

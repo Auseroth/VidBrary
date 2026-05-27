@@ -1,4 +1,4 @@
-namespace MediaCatalog.Services.Navigation;
+namespace VidBrary.Services.Navigation;
 
 public interface INavigationService
 {

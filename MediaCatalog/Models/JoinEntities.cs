@@ -1,4 +1,4 @@
-namespace MediaCatalog.Models;
+namespace VidBrary.Models;
 
 // Many-to-many joins
 

@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using MediaCatalog.Models;
-using MediaCatalog.Services.Settings;
+using VidBrary.Models;
+using VidBrary.Services.Settings;
 
-namespace MediaCatalog.Services.Theme;
+namespace VidBrary.Services.Theme;
 
 public static class ThemeService
 {

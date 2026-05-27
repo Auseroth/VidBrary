@@ -1,4 +1,4 @@
-namespace MediaCatalog.Services.Settings;
+namespace VidBrary.Services.Settings;
 
 public interface ISettingsService
 {

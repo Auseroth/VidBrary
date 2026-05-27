@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace MediaCatalog.Migrations
+namespace VidBrary.Migrations
 {
     /// <inheritdoc />
     public partial class AddTvShowSeasonOrderOverride : Migration

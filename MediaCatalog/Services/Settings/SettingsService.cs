@@ -1,13 +1,13 @@
 using System.IO;
 using System.Text.Json;
 
-namespace MediaCatalog.Services.Settings;
+namespace VidBrary.Services.Settings;
 
 public class SettingsService : ISettingsService
 {
     private static readonly string SettingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-        "MediaCatalog", "settings.json");
+        "VidBrary", "settings.json");
 
     public AppSettings Current { get; private set; } = new();
 

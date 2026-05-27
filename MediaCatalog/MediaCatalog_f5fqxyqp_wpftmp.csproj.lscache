@@ -13,18 +13,18 @@ primary
 lastDtbSucceeded
 
 [properties]
-AssemblyName=MediaCatalog
+AssemblyName=VidBrary
 CommandLineArgsForDesignTimeEvaluation=-langversion:12.0 -define:TRACE
 CompilerGeneratedFilesOutputPath=
 MaxSupportedLangVersion=12.0
 ProjectAssetsFile=<PATH>obj/project.assets.json
-RootNamespace=MediaCatalog
+RootNamespace=VidBrary
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
 SolutionPath=*Undefined*
 TargetFrameworkIdentifier=.NETCoreApp
-TargetPath=<PATH>bin/Debug/net8.0-windows/MediaCatalog.dll
-TargetRefPath=<PATH>obj/Debug/net8.0-windows/ref/MediaCatalog.dll
+TargetPath=<PATH>bin/Debug/net8.0-windows/VidBrary.dll
+TargetRefPath=<PATH>obj/Debug/net8.0-windows/ref/VidBrary.dll
 TemporaryDependencyNodeTargetIdentifier=net8.0-windows
 
 [commandLineArguments]
@@ -43,8 +43,8 @@ TemporaryDependencyNodeTargetIdentifier=net8.0-windows
 /debug:portable
 /filealign:512
 /optimize-
-/out:obj\Debug\net8.0-windows\MediaCatalog.dll
-/refout:obj\Debug\net8.0-windows\refint\MediaCatalog.dll
+/out:obj\Debug\net8.0-windows\VidBrary.dll
+/refout:obj\Debug\net8.0-windows\refint\VidBrary.dll
 /target:winexe
 /warnaserror-
 /utf8output
@@ -62,7 +62,7 @@ Converters/
  NonZeroToVisibilityConverter.cs
  StringToVisibilityConverter.cs
  ZeroToVisibilityConverter.cs
-Data/MediaCatalogDbContext.cs
+Data/VidBraryDbContext.cs
 MainWindow.xaml.cs
 Models/
  Collection.cs
@@ -84,8 +84,8 @@ obj/Debug/net8.0-windows/
  App.g.cs
  GeneratedInternalTypeHelper.g.cs
  MainWindow.g.cs
- MediaCatalog_f5fqxyqp_wpftmp.AssemblyInfo.cs
- MediaCatalog_f5fqxyqp_wpftmp.GlobalUsings.g.cs
+ VidBrary_f5fqxyqp_wpftmp.AssemblyInfo.cs
+ VidBrary_f5fqxyqp_wpftmp.GlobalUsings.g.cs
  Views/Pages/
   CollectionDetailPage.g.cs
   CollectionsPage.g.cs
@@ -378,4 +378,4 @@ Views/Pages/
 
 [analyzerConfigFiles]
 <DOTNET>/sdk/9.0.312/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_8_default.globalconfig
-obj/Debug/net8.0-windows/MediaCatalog_f5fqxyqp_wpftmp.GeneratedMSBuildEditorConfig.editorconfig
+obj/Debug/net8.0-windows/VidBrary_f5fqxyqp_wpftmp.GeneratedMSBuildEditorConfig.editorconfig

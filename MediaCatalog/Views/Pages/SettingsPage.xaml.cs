@@ -2,10 +2,10 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using MediaCatalog.ViewModels;
+using VidBrary.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MediaCatalog.Views.Pages;
+namespace VidBrary.Views.Pages;
 
 public partial class SettingsPage : Page
 {

@@ -13,18 +13,18 @@ primary
 lastDtbSucceeded
 
 [properties]
-AssemblyName=MediaCatalog
+AssemblyName=VidBrary
 CommandLineArgsForDesignTimeEvaluation=-langversion:12.0 -define:TRACE
 CompilerGeneratedFilesOutputPath=
 MaxSupportedLangVersion=12.0
 ProjectAssetsFile=<PATH>obj/project.assets.json
-RootNamespace=MediaCatalog
+RootNamespace=VidBrary
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
 SolutionPath=*Undefined*
 TargetFrameworkIdentifier=.NETCoreApp
-TargetPath=<PATH>bin/Debug/net8.0-windows/MediaCatalog.dll
-TargetRefPath=<PATH>obj/Debug/net8.0-windows/ref/MediaCatalog.dll
+TargetPath=<PATH>bin/Debug/net8.0-windows/VidBrary.dll
+TargetRefPath=<PATH>obj/Debug/net8.0-windows/ref/VidBrary.dll
 TemporaryDependencyNodeTargetIdentifier=net8.0-windows
 
 [commandLineArguments]
@@ -43,8 +43,8 @@ TemporaryDependencyNodeTargetIdentifier=net8.0-windows
 /debug:portable
 /filealign:512
 /optimize-
-/out:obj\Debug\net8.0-windows\MediaCatalog.dll
-/refout:obj\Debug\net8.0-windows\refint\MediaCatalog.dll
+/out:obj\Debug\net8.0-windows\VidBrary.dll
+/refout:obj\Debug\net8.0-windows\refint\VidBrary.dll
 /target:winexe
 /warnaserror-
 /utf8output
@@ -62,7 +62,7 @@ Converters/
  NonZeroToVisibilityConverter.cs
  StringToVisibilityConverter.cs
  ZeroToVisibilityConverter.cs
-Data/MediaCatalogDbContext.cs
+Data/VidBraryDbContext.cs
 MainWindow.xaml.cs
 Models/
  Collection.cs
@@ -81,8 +81,8 @@ Models/
  WatchHistory.cs
 obj/Debug/net8.0-windows/
  .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
- MediaCatalog.AssemblyInfo.cs
- MediaCatalog.GlobalUsings.g.cs
+ VidBrary.AssemblyInfo.cs
+ VidBrary.GlobalUsings.g.cs
 Services/MediaInfo/
  IMediaInfoService.cs
  MediaInfoService.cs
@@ -402,4 +402,4 @@ Views/Pages/
 
 [analyzerConfigFiles]
 <DOTNET>/sdk/9.0.312/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_8_default.globalconfig
-obj/Debug/net8.0-windows/MediaCatalog.GeneratedMSBuildEditorConfig.editorconfig
+obj/Debug/net8.0-windows/VidBrary.GeneratedMSBuildEditorConfig.editorconfig

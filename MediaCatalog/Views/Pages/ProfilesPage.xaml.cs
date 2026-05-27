@@ -1,8 +1,8 @@
 using System.Windows.Controls;
-using MediaCatalog.ViewModels;
+using VidBrary.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MediaCatalog.Views.Pages;
+namespace VidBrary.Views.Pages;
 
 public partial class ProfilesPage : Page
 {

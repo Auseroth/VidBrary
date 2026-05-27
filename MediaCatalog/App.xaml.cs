@@ -1,25 +1,25 @@
 ﻿using System.IO;
 using System.Windows;
-using MediaCatalog.Data;
-using MediaCatalog.Services.MediaInfo;
-using MediaCatalog.Services.Navigation;
-using MediaCatalog.Services.Scanner;
-using MediaCatalog.Services.Settings;
-using MediaCatalog.Services.Theme;
-using MediaCatalog.Services.Tmdb;
-using MediaCatalog.ViewModels;
+using VidBrary.Data;
+using VidBrary.Services.MediaInfo;
+using VidBrary.Services.Navigation;
+using VidBrary.Services.Scanner;
+using VidBrary.Services.Settings;
+using VidBrary.Services.Theme;
+using VidBrary.Services.Tmdb;
+using VidBrary.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace MediaCatalog;
+namespace VidBrary;
 
 public partial class App : Application
 {
     private static readonly string DataDirectory = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-        "NasCastr");
+        "VidBrary");
 
     public static IServiceProvider Services { get; private set; } = null!;
     private readonly IHost _host;
@@ -44,7 +44,7 @@ public partial class App : Application
         var dbPath = Path.Combine(DataDirectory, "catalog.db");
         Directory.CreateDirectory(DataDirectory);
 
-        services.AddDbContext<MediaCatalogDbContext>(options =>
+        services.AddDbContext<VidBraryDbContext>(options =>
             options.UseSqlite($"Data Source={dbPath}"));
 
         services.AddSingleton<ISettingsService, SettingsService>();
@@ -80,7 +80,7 @@ public partial class App : Application
         Services = _host.Services;
 
         using var scope = Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<MediaCatalogDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<VidBraryDbContext>();
         await db.Database.MigrateAsync();
 
         // Seed a default profile if none exist

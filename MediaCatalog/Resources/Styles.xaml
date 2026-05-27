@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:MediaCatalog.Converters">
+                    xmlns:converters="clr-namespace:VidBrary.Converters">
 
     <!-- ══ Converters ══ -->
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>

@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using MediaCatalog.Services.Navigation;
-using MediaCatalog.ViewModels;
+using VidBrary.Services.Navigation;
+using VidBrary.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MediaCatalog;
+namespace VidBrary;
 
 public partial class MainWindow : Window
 {

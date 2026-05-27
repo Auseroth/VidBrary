@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace MediaCatalog.ViewModels.Base;
+namespace VidBrary.ViewModels.Base;
 
 /// <summary>
 /// Base class for all ViewModels in the application.

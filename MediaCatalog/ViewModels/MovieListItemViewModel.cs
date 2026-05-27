@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using MediaCatalog.Models;
+using VidBrary.Models;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 /// <summary>Lightweight wrapper around Movie for list display.</summary>
 public partial class MovieListItemViewModel : ObservableObject

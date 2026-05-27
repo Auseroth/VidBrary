@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaCatalog.Services.MediaInfo;
-using MediaCatalog.Services.Scanner;
-using MediaCatalog.Services.Tmdb;
-using MediaCatalog.ViewModels.Base;
+using VidBrary.Services.MediaInfo;
+using VidBrary.Services.Scanner;
+using VidBrary.Services.Tmdb;
+using VidBrary.ViewModels.Base;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public partial class ScanViewModel(
     IScannerService scanner,

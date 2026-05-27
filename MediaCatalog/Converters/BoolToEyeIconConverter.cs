@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace MediaCatalog.Converters;
+namespace VidBrary.Converters;
 
 [ValueConversion(typeof(bool), typeof(string))]
 public class BoolToEyeIconConverter : IValueConverter

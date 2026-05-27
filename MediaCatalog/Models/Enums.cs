@@ -1,4 +1,4 @@
-namespace MediaCatalog.Models;
+namespace VidBrary.Models;
 
 public enum MatchStatus
 {

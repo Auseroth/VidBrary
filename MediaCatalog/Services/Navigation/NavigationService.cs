@@ -1,8 +1,8 @@
 ﻿using System.Windows.Controls;
-using MediaCatalog.ViewModels.Base;
+using VidBrary.ViewModels.Base;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MediaCatalog.Services.Navigation;
+namespace VidBrary.Services.Navigation;
 
 public class NavigationService(IServiceProvider services) : INavigationService
 {
@@ -29,7 +29,7 @@ public class NavigationService(IServiceProvider services) : INavigationService
         var viewType = ResolveViewType(viewModelType)
             ?? throw new InvalidOperationException(
                 $"No View found for {viewModelType.Name}. Expected view name: " +
-                $"{viewModelType.Name.Replace("ViewModel", "Page")} in MediaCatalog.Views.Pages");
+                $"{viewModelType.Name.Replace("ViewModel", "Page")} in VidBrary.Views.Pages");
 
         var page = (Page)Activator.CreateInstance(viewType)!;
         page.DataContext = viewModel;
@@ -43,7 +43,7 @@ public class NavigationService(IServiceProvider services) : INavigationService
     private static Type? ResolveViewType(Type viewModelType)
     {
         var pageName = viewModelType.Name.Replace("ViewModel", "Page");
-        var fullViewName = $"MediaCatalog.Views.Pages.{pageName}";
+        var fullViewName = $"VidBrary.Views.Pages.{pageName}";
 
         // Search the assembly that contains the views
         return typeof(NavigationService).Assembly.GetType(fullViewName);

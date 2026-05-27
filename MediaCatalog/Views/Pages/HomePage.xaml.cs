@@ -1,7 +1,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace MediaCatalog.Views.Pages;
+namespace VidBrary.Views.Pages;
 
 public partial class HomePage : Page
 {

@@ -1,8 +1,8 @@
-﻿<Page x:Class="MediaCatalog.Views.Pages.MoviesPage"
+﻿<Page x:Class="VidBrary.Views.Pages.MoviesPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:vm="clr-namespace:MediaCatalog.ViewModels"
-      xmlns:models="clr-namespace:MediaCatalog.Models"
+      xmlns:vm="clr-namespace:VidBrary.ViewModels"
+      xmlns:models="clr-namespace:VidBrary.Models"
       Background="#1a1a2e">
 
     <Page.Resources>

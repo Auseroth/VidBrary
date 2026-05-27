@@ -1,4 +1,4 @@
-namespace MediaCatalog.Models;
+namespace VidBrary.Models;
 
 /// <summary>
 /// Stores all raw TMDB search results for a media item

@@ -3,17 +3,17 @@ using System.Diagnostics;
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaCatalog.Data;
-using MediaCatalog.Models;
-using MediaCatalog.Services.Settings;
-using MediaCatalog.Services.Tmdb;
-using MediaCatalog.ViewModels.Base;
+using VidBrary.Data;
+using VidBrary.Models;
+using VidBrary.Services.Settings;
+using VidBrary.Services.Tmdb;
+using VidBrary.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public partial class TvShowDetailViewModel(
-    MediaCatalogDbContext db,
+    VidBraryDbContext db,
     ITmdbService tmdb,
     ISettingsService settings) : ViewModelBase
 {

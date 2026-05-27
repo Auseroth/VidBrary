@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MediaCatalog.Migrations
+namespace VidBrary.Migrations
 {
     /// <inheritdoc />
     public partial class AddMyListFix : Migration

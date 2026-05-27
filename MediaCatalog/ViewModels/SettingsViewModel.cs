@@ -1,13 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaCatalog.Models;
-using MediaCatalog.Services.Settings;
-using MediaCatalog.Services.Theme;
-using MediaCatalog.ViewModels.Base;
+using VidBrary.Models;
+using VidBrary.Services.Settings;
+using VidBrary.Services.Theme;
+using VidBrary.ViewModels.Base;
 using Microsoft.Win32;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public partial class SettingsViewModel(ISettingsService settingsService) : ViewModelBase
 {

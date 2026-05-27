@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using MediaCatalog.Models;
+using VidBrary.Models;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public partial class TvShowListItemViewModel : ObservableObject
 {

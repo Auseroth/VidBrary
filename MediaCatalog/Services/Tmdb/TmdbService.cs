@@ -1,6 +1,6 @@
-﻿using MediaCatalog.Data;
-using MediaCatalog.Models;
-using MediaCatalog.Services.Settings;
+﻿using VidBrary.Data;
+using VidBrary.Models;
+using VidBrary.Services.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TMDbLib.Client;
@@ -9,13 +9,13 @@ using TMDbLib.Objects.Search;
 using TMDbLib.Objects.TvShows;
 using TmdbMovie = TMDbLib.Objects.Movies.Movie;
 using TmdbTvShow = TMDbLib.Objects.TvShows.TvShow;
-using Movie = MediaCatalog.Models.Movie;
-using TvShow = MediaCatalog.Models.TvShow;
+using Movie = VidBrary.Models.Movie;
+using TvShow = VidBrary.Models.TvShow;
 
-namespace MediaCatalog.Services.Tmdb;
+namespace VidBrary.Services.Tmdb;
 
 public class TmdbService(
-    MediaCatalogDbContext db,
+    VidBraryDbContext db,
     ISettingsService settingsService,
     ILogger<TmdbService> logger) : ITmdbService
 {

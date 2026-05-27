@@ -1,23 +1,23 @@
 using System.IO;
-using MediaCatalog.Data;
+using VidBrary.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace MediaCatalog.Data;
+namespace VidBrary.Data;
 
-public class MediaCatalogDbContextFactory : IDesignTimeDbContextFactory<MediaCatalogDbContext>
+public class VidBraryDbContextFactory : IDesignTimeDbContextFactory<VidBraryDbContext>
 {
-    public MediaCatalogDbContext CreateDbContext(string[] args)
+    public VidBraryDbContext CreateDbContext(string[] args)
     {
         var dbPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "NasCastr",
+            "VidBrary",
             "catalog.db");
 
-        var options = new DbContextOptionsBuilder<MediaCatalogDbContext>()
+        var options = new DbContextOptionsBuilder<VidBraryDbContext>()
             .UseSqlite($"Data Source={dbPath}")
             .Options;
 
-        return new MediaCatalogDbContext(options);
+        return new VidBraryDbContext(options);
     }
 }

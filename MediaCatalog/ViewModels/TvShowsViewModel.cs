@@ -1,16 +1,16 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaCatalog.Data;
-using MediaCatalog.Models;
-using MediaCatalog.Services.Navigation;
-using MediaCatalog.ViewModels.Base;
+using VidBrary.Data;
+using VidBrary.Models;
+using VidBrary.Services.Navigation;
+using VidBrary.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public partial class TvShowsViewModel(
-    MediaCatalogDbContext db,
+    VidBraryDbContext db,
     INavigationService navigation) : ViewModelBase
 {
     private List<TvShowListItemViewModel> _allShows = [];

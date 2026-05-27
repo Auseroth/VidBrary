@@ -1,16 +1,16 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaCatalog.Data;
-using MediaCatalog.Models;
-using MediaCatalog.Services.Navigation;
-using MediaCatalog.Services.Settings;
-using MediaCatalog.ViewModels;
-using MediaCatalog.ViewModels.Base;
+using VidBrary.Data;
+using VidBrary.Models;
+using VidBrary.Services.Navigation;
+using VidBrary.Services.Settings;
+using VidBrary.ViewModels;
+using VidBrary.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
 
 public partial class HomeViewModel(
-    MediaCatalogDbContext db,
+    VidBraryDbContext db,
     ISettingsService settingsService,
     INavigationService navigation,
     ScanViewModel scanViewModel) : ViewModelBase

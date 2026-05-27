@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using MediaCatalog.Models;
+using VidBrary.Models;
 
-namespace MediaCatalog.Data;
+namespace VidBrary.Data;
 
-public class MediaCatalogDbContext(DbContextOptions<MediaCatalogDbContext> options) : DbContext(options)
+public class VidBraryDbContext(DbContextOptions<VidBraryDbContext> options) : DbContext(options)
 {
     public DbSet<Movie> Movies => Set<Movie>();
     public DbSet<TvShow> TvShows => Set<TvShow>();

@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace MediaCatalog.Converters;
+namespace VidBrary.Converters;
 
 /// <summary>Visible when the integer value is zero, Collapsed otherwise.</summary>
 [ValueConversion(typeof(int), typeof(Visibility))]

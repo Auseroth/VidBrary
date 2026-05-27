@@ -1,15 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaCatalog.Data;
-using MediaCatalog.Services.Navigation;
-using MediaCatalog.ViewModels.Base;
+using VidBrary.Data;
+using VidBrary.Services.Navigation;
+using VidBrary.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public partial class CollectionDetailViewModel(
-    MediaCatalogDbContext db,
+    VidBraryDbContext db,
     INavigationService navigation) : ViewModelBase
 {
     private int _collectionId;

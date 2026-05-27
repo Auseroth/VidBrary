@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace MediaCatalog.Converters;
+namespace VidBrary.Converters;
 
 /// <summary>Visible when the string is non-empty, Collapsed when empty.</summary>
 [ValueConversion(typeof(string), typeof(Visibility))]

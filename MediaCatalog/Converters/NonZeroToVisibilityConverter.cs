@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace MediaCatalog.Converters;
+namespace VidBrary.Converters;
 
 [ValueConversion(typeof(int), typeof(Visibility))]
 public class NonZeroToVisibilityConverter : IValueConverter

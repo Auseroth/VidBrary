@@ -1,6 +1,6 @@
-using MediaCatalog.Models;
+using VidBrary.Models;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public class CollectionListItemViewModel
 {

@@ -2,17 +2,17 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaCatalog.Data;
-using MediaCatalog.Models;
-using MediaCatalog.Services.Settings;
-using MediaCatalog.Services.Tmdb;
-using MediaCatalog.ViewModels.Base;
+using VidBrary.Data;
+using VidBrary.Models;
+using VidBrary.Services.Settings;
+using VidBrary.Services.Tmdb;
+using VidBrary.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
 
-namespace MediaCatalog.ViewModels;
+namespace VidBrary.ViewModels;
 
 public partial class MovieDetailViewModel(
-    MediaCatalogDbContext db,
+    VidBraryDbContext db,
     ITmdbService tmdb,
     ISettingsService settings) : ViewModelBase
 {
@@ -51,6 +51,10 @@ public partial class MovieDetailViewModel(
     [ObservableProperty] private ObservableCollection<TagViewModel> _tags = [];
     [ObservableProperty] private ObservableCollection<TagViewModel> _availableTags = [];
     [ObservableProperty] private bool _showTagPicker;
+
+    // ── My List ───────────────────────────────────────────────────────────────
+    [ObservableProperty] private bool _isInMyList;
+    public string MyListButtonLabel => IsInMyList ? "✓ In My List" : "＋ My List";
 
     // ── Match status ──────────────────────────────────────────────────────────
     [ObservableProperty] private MatchStatus _matchStatus;
@@ -169,11 +173,17 @@ public partial class MovieDetailViewModel(
                 Color   = t.ColorHex ?? "#0f3460"
             }));
 
+        // Check My List state
+        var profileId = settings.Current.ActiveProfileId;
+        IsInMyList = await db.MyList
+            .AnyAsync(m => m.UserProfileId == profileId && m.MovieId == _movieId);
+
         OnPropertyChanged(nameof(RuntimeDisplay));
         OnPropertyChanged(nameof(RatingDisplay));
         OnPropertyChanged(nameof(MatchButtonLabel));
         OnPropertyChanged(nameof(MatchButtonColor));
         OnPropertyChanged(nameof(MatchButtonEnabled));
+        OnPropertyChanged(nameof(MyListButtonLabel));
 
         IsBusy = false;
     }
@@ -181,15 +191,73 @@ public partial class MovieDetailViewModel(
     // ── Play ──────────────────────────────────────────────────────────────────
 
     [RelayCommand]
-    private void Play()
+    private async Task PlayAsync()
     {
         var player = settings.Current.DefaultMediaPlayerPath;
         var psi = string.IsNullOrWhiteSpace(player)
             ? new ProcessStartInfo(FilePath) { UseShellExecute = true }
             : new ProcessStartInfo(player, $"\"{FilePath}\"") { UseShellExecute = true };
 
-        try { Process.Start(psi); }
-        catch (Exception ex) { ErrorMessage = $"Could not launch player: {ex.Message}"; }
+        try
+        {
+            Process.Start(psi);
+
+            // Log to watch history (last 10 kept per profile)
+            var profileId = settings.Current.ActiveProfileId;
+            db.WatchHistory.Add(new WatchHistory
+            {
+                UserProfileId = profileId,
+                MovieId       = _movieId,
+                WatchedAt     = DateTime.UtcNow,
+                Completed     = false
+            });
+            await db.SaveChangesAsync();
+
+            // Trim to last 10 play events for this profile (movies only, to keep it simple)
+            var old = await db.WatchHistory
+                .Where(w => w.UserProfileId == profileId && w.MovieId != null)
+                .OrderByDescending(w => w.WatchedAt)
+                .Skip(10)
+                .ToListAsync();
+            if (old.Count > 0)
+            {
+                db.WatchHistory.RemoveRange(old);
+                await db.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Could not launch player: {ex.Message}";
+        }
+    }
+
+    // ── My List ───────────────────────────────────────────────────────────────
+
+    [RelayCommand]
+    private async Task AddToMyListAsync()
+    {
+        var profileId = settings.Current.ActiveProfileId;
+
+        var existing = await db.MyList
+            .FirstOrDefaultAsync(m => m.UserProfileId == profileId && m.MovieId == _movieId);
+
+        if (existing is null)
+        {
+            db.MyList.Add(new MyListItem
+            {
+                UserProfileId = profileId,
+                MovieId       = _movieId,
+                AddedAt       = DateTime.UtcNow
+            });
+        }
+        else
+        {
+            db.MyList.Remove(existing);
+        }
+
+        await db.SaveChangesAsync();
+        IsInMyList = existing is null; // toggled
+        OnPropertyChanged(nameof(MyListButtonLabel));
     }
 
     // ── Match dialog ──────────────────────────────────────────────────────────
@@ -221,16 +289,13 @@ public partial class MovieDetailViewModel(
     [RelayCommand]
     private void ToggleCandidate(TmdbCandidateViewModel candidate)
     {
-        // Expand on first click, select on second — or just toggle expand
         if (!candidate.IsExpanded)
         {
-            // Collapse others
             foreach (var c in Candidates) c.IsExpanded = false;
             candidate.IsExpanded = true;
         }
         else
         {
-            // Toggle selection
             var wasSelected = candidate.IsSelected;
             foreach (var c in Candidates) c.IsSelected = false;
             candidate.IsSelected = !wasSelected;

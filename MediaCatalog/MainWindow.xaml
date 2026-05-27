@@ -1,7 +1,7 @@
-﻿<Window x:Class="MediaCatalog.MainWindow"
+﻿<Window x:Class="VidBrary.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="NasCastr" Height="768" Width="1280"
+        Title="VidBrary" Height="768" Width="1280"
         MinHeight="600" MinWidth="900"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource AppBrushBg}"
@@ -28,7 +28,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="NasCastr"
+                <TextBlock Grid.Column="0" Text="VidBrary"
                            Foreground="White" FontSize="14" FontWeight="SemiBold"
                            VerticalAlignment="Center" Margin="16,0,0,0"
                            IsHitTestVisible="False"/>
@@ -80,7 +80,7 @@
 
                     <!-- Top: app name + profile card -->
                     <StackPanel DockPanel.Dock="Top" Margin="16,0,16,20">
-                        <TextBlock Text="🎬 NasCastr" Foreground="White"
+                        <TextBlock Text="🎬 VidBrary" Foreground="White"
                                    FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
                         <Border Background="#0f3460" CornerRadius="6" Padding="8,6" Cursor="Hand">
                             <Border.InputBindings>

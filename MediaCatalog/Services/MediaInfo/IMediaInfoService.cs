@@ -1,4 +1,4 @@
-namespace MediaCatalog.Services.MediaInfo;
+namespace VidBrary.Services.MediaInfo;
 
 public interface IMediaInfoService
 {
