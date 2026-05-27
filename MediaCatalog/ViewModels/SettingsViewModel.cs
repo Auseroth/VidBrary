@@ -1,15 +1,28 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using VidBrary.Data;
 using VidBrary.Models;
+using VidBrary.Services.Scanner;
 using VidBrary.Services.Settings;
 using VidBrary.Services.Theme;
+using VidBrary.Services.Tmdb;
 using VidBrary.ViewModels.Base;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 
 namespace VidBrary.ViewModels;
 
-public partial class SettingsViewModel(ISettingsService settingsService) : ViewModelBase
+public partial class SettingsViewModel(
+    ISettingsService settingsService,
+    IScannerService scannerService,
+    ILogger<SettingsViewModel> logger) : ViewModelBase
 {
     // ── Directories ───────────────────────────────────────────────────────────
     [ObservableProperty] private ObservableCollection<string> _movieDirectories = [];
@@ -58,6 +71,17 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     [ObservableProperty] private SeasonOrderOption _selectedSeasonOrderMode =
         new(SeasonOrderMode.TmdbAuto, "TMDB Auto");
 
+    // ── Database ──────────────────────────────────────────────────────────────
+    [ObservableProperty] private string _databasePath = string.Empty;
+
+    // ── Update ────────────────────────────────────────────────────────────────
+    [ObservableProperty] private string? _updateStatus;
+    [ObservableProperty] private bool _isCheckingUpdate;
+
+    // ── DB Operations ─────────────────────────────────────────────────────────
+    [ObservableProperty] private string? _dbOperationStatus;
+    [ObservableProperty] private bool _isDbBusy;
+
     // ── Confirmation ──────────────────────────────────────────────────────────
     [ObservableProperty] private string? _saveConfirmation;
 
@@ -71,12 +95,13 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
         TvShowDirectories = new ObservableCollection<string>(s.TvShowDirectories);
         AllowedExtensions = new ObservableCollection<string>(s.AllowedExtensions);
 
-        TmdbApiKey       = s.TmdbApiKey ?? string.Empty;
-        MediaPlayerPath  = s.DefaultMediaPlayerPath ?? string.Empty;
+        TmdbApiKey        = s.TmdbApiKey ?? string.Empty;
+        MediaPlayerPath   = s.DefaultMediaPlayerPath ?? string.Empty;
         UseWindowsDefault = string.IsNullOrWhiteSpace(s.DefaultMediaPlayerPath);
-        ScanOnLaunch     = s.ScanOnLaunch;
-        SelectedTheme    = s.Theme;
-        SelectedViewMode = s.DefaultViewMode;
+        ScanOnLaunch      = s.ScanOnLaunch;
+        SelectedTheme     = s.Theme;
+        SelectedViewMode  = s.DefaultViewMode;
+        DatabasePath      = s.DatabasePath ?? string.Empty;
 
         BackgroundColor = s.BackgroundColor;
         SurfaceColor    = s.SurfaceColor;
@@ -160,6 +185,24 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
         UseWindowsDefault = true;
     }
 
+    // ── Database Path ─────────────────────────────────────────────────────────
+
+    [RelayCommand]
+    private void BrowseDatabasePath()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Select or specify a catalog.db file",
+            Filter = "SQLite Database (*.db)|*.db|All files (*.*)|*.*",
+            CheckFileExists = false
+        };
+        if (dialog.ShowDialog() == true)
+            DatabasePath = dialog.FileName;
+    }
+
+    [RelayCommand]
+    private void ClearDatabasePath() => DatabasePath = string.Empty;
+
     // ── TMDB Key Visibility ───────────────────────────────────────────────────
 
     [RelayCommand]
@@ -171,14 +214,150 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     [RelayCommand]
     private void ResetColors()
     {
-        var s = settingsService.Current;
-        // Reset to theme defaults by clearing overrides
         var defaults = SelectedTheme switch
         {
             AppTheme.Light => ("#f5f7fa", "#ffffff", "#D9652B", "#1a73e8"),
             _              => ("#1a1a2e", "#16213e", "#D9652B", "#0f3460")
         };
         (BackgroundColor, SurfaceColor, AccentColor, SecondaryColor) = defaults;
+    }
+
+    // ── Check for Update (GitHub) ─────────────────────────────────────────────
+
+    [RelayCommand]
+    private async Task CheckForUpdateAsync()
+    {
+        if (IsCheckingUpdate) return;
+        IsCheckingUpdate = true;
+        UpdateStatus = "Checking for updates…";
+
+        var current = Assembly.GetExecutingAssembly()
+                              .GetName().Version?.ToString(3) ?? "0.0.0";
+
+        try
+        {
+            using var http = new HttpClient();
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("VidBrary-UpdateCheck/1.0");
+
+            var response = await http.GetAsync(
+                "https://api.github.com/repos/Auseroth/VidBrary/releases/latest");
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                UpdateStatus = $"✅ Cannot reach Repo for update ( you are on v{current})";
+                return;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            var release = await response.Content
+                .ReadFromJsonAsync<GitHubRelease>();
+
+            if (release is null)
+            {
+                UpdateStatus = "⚠ Could not read release info.";
+                return;
+            }
+
+            var latestTag = release.TagName?.TrimStart('v') ?? string.Empty;
+
+            if (Version.TryParse(latestTag, out var latest) &&
+                Version.TryParse(current,   out var running) &&
+                latest > running)
+            {
+                UpdateStatus = $"🆕 Update available: v{latestTag}  (you have v{current})  —  {release.HtmlUrl}";
+            }
+            else
+            {
+                UpdateStatus = $"✅ No new version available  (latest: v{latestTag}  |  you have v{current})";
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Update check failed");
+            UpdateStatus = $"⚠ Update check failed: {ex.Message}";
+        }
+        finally
+        {
+            IsCheckingUpdate = false;
+        }
+    }
+
+    // ── Version info (displayed in footer) ───────────────────────────────────
+
+    public string AppVersion =>
+        "v" + (Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0");
+
+    // ── Purge Stale Data ──────────────────────────────────────────────────────
+
+    [RelayCommand]
+    private async Task PurgeStaleDataAsync()
+    {
+        if (IsDbBusy) return;
+        IsDbBusy = true;
+        DbOperationStatus = "Removing stale entries…";
+
+        try
+        {
+            var result = await scannerService.PurgeStaleDataAsync();
+            DbOperationStatus =
+                $"✅ Removed {result.MoviesUpdated} movie(s), " +
+                $"{result.EpisodesAdded} episode(s), " +
+                $"{result.ShowsAdded} show(s) with no remaining episodes.";
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "PurgeStaleData failed. Inner: {Inner}", ex.InnerException?.ToString() ?? "none");
+            DbOperationStatus = $"⚠ Purge failed: {ex.Message} | Inner: {ex.InnerException?.Message ?? "none"}";
+        }
+        finally
+        {
+            IsDbBusy = false;
+            await Task.Delay(6000);
+            DbOperationStatus = null;
+        }
+    }
+
+    // ── Delete Database File ──────────────────────────────────────────────────
+
+    [RelayCommand]
+    private async Task DeleteDatabaseAsync()
+    {
+        var dbPath = string.IsNullOrWhiteSpace(settingsService.Current.DatabasePath)
+            ? Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                "VidBrary", "catalog.db")
+            : settingsService.Current.DatabasePath;
+
+        if (IsDbBusy) return;
+
+        var confirm = System.Windows.MessageBox.Show(
+            $"This will permanently delete the database file:\n\n{dbPath}\n\n" +
+            "The app will need to be restarted. Are you sure?",
+            "Delete Database",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Warning);
+
+        if (confirm != System.Windows.MessageBoxResult.Yes) return;
+
+        IsDbBusy = true;
+        DbOperationStatus = "Deleting database…";
+
+        try
+        {
+            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+
+            if (File.Exists(dbPath))
+                File.Delete(dbPath);
+
+            DbOperationStatus = "✅ Database deleted. Please restart VidBrary.";
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "DeleteDatabase failed. Inner: {Inner}", ex.InnerException?.ToString() ?? "none");
+            DbOperationStatus = $"⚠ Delete failed: {ex.Message} | Inner: {ex.InnerException?.Message ?? "none"}";
+            IsDbBusy = false;
+        }
     }
 
     // ── Save ──────────────────────────────────────────────────────────────────
@@ -188,15 +367,18 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     {
         var s = settingsService.Current;
 
-        s.MovieDirectories  = [.. MovieDirectories];
-        s.TvShowDirectories = [.. TvShowDirectories];
-        s.AllowedExtensions = [.. AllowedExtensions];
-        s.TmdbApiKey        = string.IsNullOrWhiteSpace(TmdbApiKey) ? null : TmdbApiKey.Trim();
+        var previousKey = s.TmdbApiKey;
+
+        s.MovieDirectories       = [.. MovieDirectories];
+        s.TvShowDirectories      = [.. TvShowDirectories];
+        s.AllowedExtensions      = [.. AllowedExtensions];
+        s.TmdbApiKey             = string.IsNullOrWhiteSpace(TmdbApiKey) ? null : TmdbApiKey.Trim();
         s.DefaultMediaPlayerPath = UseWindowsDefault ? null : MediaPlayerPath;
-        s.ScanOnLaunch      = ScanOnLaunch;
-        s.Theme             = SelectedTheme;
-        s.DefaultViewMode   = SelectedViewMode;
+        s.ScanOnLaunch           = ScanOnLaunch;
+        s.Theme                  = SelectedTheme;
+        s.DefaultViewMode        = SelectedViewMode;
         s.DefaultSeasonOrderMode = SelectedSeasonOrderMode?.Mode ?? SeasonOrderMode.TmdbAuto;
+        s.DatabasePath           = string.IsNullOrWhiteSpace(DatabasePath) ? null : DatabasePath.Trim();
 
         s.BackgroundColor = BackgroundColor;
         s.SurfaceColor    = SurfaceColor;
@@ -205,10 +387,35 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
 
         await settingsService.SaveAsync();
 
-        // Apply the new theme immediately — no restart needed
         ThemeService.Apply(s);
 
-        SaveConfirmation = "Settings saved ✓";
+        // If a TMDB key was just added for the first time, kick off enrichment
+        // in the background using a dedicated scope so it never touches the UI DbContext
+        var keyAdded = string.IsNullOrWhiteSpace(previousKey)
+                    && !string.IsNullOrWhiteSpace(s.TmdbApiKey);
+        if (keyAdded)
+        {
+            SaveConfirmation = "Settings saved ✓  —  Starting TMDB enrichment…";
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    using var scope = App.Services.CreateScope();
+                    var tmdb = scope.ServiceProvider.GetRequiredService<ITmdbService>();
+                    await tmdb.EnrichAllMoviesAsync();
+                    await tmdb.EnrichAllShowsAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Background TMDB enrichment after key save failed");
+                }
+            });
+        }
+        else
+        {
+            SaveConfirmation = "Settings saved ✓";
+        }
+
         await Task.Delay(3000);
         SaveConfirmation = null;
     }
@@ -220,4 +427,10 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
         var dialog = new OpenFolderDialog { Title = "Select Folder" };
         return dialog.ShowDialog() == true ? dialog.FolderName : null;
     }
+
+    // ── GitHub release DTO ────────────────────────────────────────────────────
+
+    private sealed record GitHubRelease(
+        [property: System.Text.Json.Serialization.JsonPropertyName("tag_name")]  string? TagName,
+        [property: System.Text.Json.Serialization.JsonPropertyName("html_url")]  string? HtmlUrl);
 }

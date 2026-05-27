@@ -1,0 +1,78 @@
+# VidBrary — Terms of Use
+
+**Version 1.2.0 · Effective Date: 2025**
+
+---
+
+## 1. Acceptance
+
+By downloading, installing, or using VidBrary ("the App"), you agree to these Terms of Use. If you do not agree, do not use the App.
+
+---
+
+## 2. License
+
+VidBrary is released under the [MIT License](https://opensource.org/licenses/MIT).  
+You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to the conditions of that license.
+
+Source code is available at: https://github.com/Auseroth/VidBrary
+
+---
+
+## 3. Intended Use
+
+VidBrary is a **personal media catalog tool**. It is designed to index and display metadata for media files that you own or have the legal right to access.
+
+You agree to use the App **only with media you are legally permitted to access**. The developer does not condone and accepts no responsibility for any use of this software in violation of applicable copyright or intellectual property law.
+
+---
+
+## 4. Third-Party Services
+
+### The Movie Database (TMDB)
+This product uses the TMDB API but is not endorsed or certified by TMDB.  
+Metadata, posters, and ratings are provided by TMDB under their terms:  
+https://www.themoviedb.org/documentation/api/terms-of-use
+
+To use metadata features you must supply your own TMDB API key, obtained free of charge from https://www.themoviedb.org/settings/api. You are responsible for complying with TMDB's API terms.
+
+### GitHub
+Update checking uses the GitHub public API. No account or authentication is required.
+
+---
+
+## 5. Data & Privacy
+
+VidBrary stores all data **locally on your machine**:
+
+- A SQLite database at `%ProgramData%\VidBrary\catalog.db` (or a path you configure)
+- Application settings at `%AppData%\VidBrary\settings.json`
+- Log files at `%ProgramData%\VidBrary\logs\`
+
+**No personal data is collected or transmitted by the developer.**  
+The only outbound network requests made by the App are:
+
+- TMDB API calls to fetch media metadata (requires your API key)
+- A single read-only request to the GitHub Releases API when you click "Check for Update"
+
+---
+
+## 6. No Warranty
+
+The App is provided **"as is"**, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement.
+
+---
+
+## 7. Limitation of Liability
+
+In no event shall the author (Austin Sharman / Auseroth) be liable for any claim, damages, or other liability arising from the use of or inability to use the App, including but not limited to data loss or corruption.
+
+---
+
+## 8. Changes
+
+These terms may be updated with new releases of the App. Continued use after an update constitutes acceptance of the revised terms.
+
+---
+
+© 2025 Austin Sharman (Auseroth). All rights reserved.

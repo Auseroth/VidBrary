@@ -68,6 +68,80 @@ public class ScannerService(
         return result;
     }
 
+    public async Task<ScanResult> PurgeStaleDataAsync(CancellationToken cancellationToken = default)
+    {
+        var result = new ScanResult();
+        var sw = Stopwatch.StartNew();
+
+        // Load stale movies with ALL dependent rows so EF can cascade-delete them
+        var staleMovies = await db.Movies
+            .Where(m => m.FilePath != null)
+            .Include(m => m.Genres)
+            .Include(m => m.Tags)
+            .Include(m => m.Cast)
+            .Include(m => m.Crew)
+            .Include(m => m.WatchHistory)
+            .Include(m => m.Ratings)
+            .Include(m => m.TmdbCandidates)
+            .ToListAsync(cancellationToken);
+
+        foreach (var movie in staleMovies)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!File.Exists(movie.FilePath))
+            {
+                db.Movies.Remove(movie);
+                result.MoviesUpdated++;
+                Report($"Removed stale movie: {movie.Title}");
+            }
+        }
+
+        // Load stale episodes with all dependent rows
+        var staleEpisodes = await db.Episodes
+            .Where(e => e.FilePath != null)
+            .Include(e => e.Season)
+            .Include(e => e.WatchHistory)
+            .Include(e => e.Ratings)
+            .ToListAsync(cancellationToken);
+
+        foreach (var episode in staleEpisodes)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!File.Exists(episode.FilePath))
+            {
+                db.Episodes.Remove(episode);
+                result.EpisodesAdded++;
+                Report($"Removed stale episode: {episode.Title}");
+            }
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        // Remove seasons with no episodes
+        var emptySeasons = await db.Seasons
+            .Where(s => !db.Episodes.Any(e => e.SeasonId == s.Id))
+            .ToListAsync(cancellationToken);
+        db.Seasons.RemoveRange(emptySeasons);
+
+        // Remove shows with no seasons — include ALL child collections
+        var emptyShows = await db.TvShows
+            .Where(s => !db.Seasons.Any(se => se.TvShowId == s.Id))
+            .Include(s => s.Genres)
+            .Include(s => s.Tags)
+            .Include(s => s.Cast)
+            .Include(s => s.TmdbCandidates)
+            .ToListAsync(cancellationToken);
+        db.TvShows.RemoveRange(emptyShows);
+        result.ShowsAdded += emptyShows.Count;
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        sw.Stop();
+        result.Duration = sw.Elapsed;
+        logger.LogInformation("Purge complete. {Result}", result);
+        return result;
+    }
+
     // ── Movie Scanning ────────────────────────────────────────────────────────
 
     private async Task ScanMovieDirectoryAsync(string rootPath, ScanResult result,
@@ -75,7 +149,6 @@ public class ScannerService(
     {
         var extensions = settingsService.Current.AllowedExtensions;
 
-        // Movies are media files directly in the root OR one level deep in their own folder
         var files = Directory
             .EnumerateFiles(rootPath, "*", SearchOption.AllDirectories)
             .Where(f => extensions.Contains(Path.GetExtension(f).ToLowerInvariant()));
@@ -84,7 +157,6 @@ public class ScannerService(
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            // Skip files more than 1 level deep — those belong to TV shows
             var relativePath = Path.GetRelativePath(rootPath, filePath);
             if (relativePath.Split(Path.DirectorySeparatorChar).Length > 2)
             {
@@ -135,7 +207,6 @@ public class ScannerService(
     private async Task ScanTvDirectoryAsync(string rootPath, ScanResult result,
         CancellationToken cancellationToken)
     {
-        // Each immediate subdirectory of rootPath is a show
         foreach (var showDir in Directory.EnumerateDirectories(rootPath))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -174,7 +245,6 @@ public class ScannerService(
             show.LastScanned = DateTime.UtcNow;
         }
 
-        // Each subdirectory of the show dir is a season
         foreach (var seasonDir in Directory.EnumerateDirectories(showDir))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -251,11 +321,11 @@ public class ScannerService(
 
     private static void MergeResult(ScanResult target, ScanResult source)
     {
-        target.MoviesAdded += source.MoviesAdded;
-        target.MoviesUpdated += source.MoviesUpdated;
-        target.ShowsAdded += source.ShowsAdded;
-        target.EpisodesAdded += source.EpisodesAdded;
-        target.FilesSkipped += source.FilesSkipped;
+        target.MoviesAdded      += source.MoviesAdded;
+        target.MoviesUpdated    += source.MoviesUpdated;
+        target.ShowsAdded       += source.ShowsAdded;
+        target.EpisodesAdded    += source.EpisodesAdded;
+        target.FilesSkipped     += source.FilesSkipped;
         target.Warnings.AddRange(source.Warnings);
     }
 

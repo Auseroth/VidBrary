@@ -4,13 +4,11 @@ using VidBrary.Services.MediaInfo;
 using VidBrary.Services.Scanner;
 using VidBrary.Services.Tmdb;
 using VidBrary.ViewModels.Base;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VidBrary.ViewModels;
 
-public partial class ScanViewModel(
-    IScannerService scanner,
-    ITmdbService tmdb,
-    IMediaInfoService mediaInfo) : ViewModelBase
+public partial class ScanViewModel(IServiceScopeFactory scopeFactory) : ViewModelBase
 {
     [ObservableProperty] private string _scanStatus = "Ready";
     [ObservableProperty] private bool _isScanning;
@@ -29,6 +27,11 @@ public partial class ScanViewModel(
 
         try
         {
+            using var scope = scopeFactory.CreateScope();
+            var scanner   = scope.ServiceProvider.GetRequiredService<IScannerService>();
+            var tmdb      = scope.ServiceProvider.GetRequiredService<ITmdbService>();
+            var mediaInfo = scope.ServiceProvider.GetRequiredService<IMediaInfoService>();
+
             // Phase 1 — discover files
             ScanStatus = "Scanning directories...";
             var result = await scanner.ScanAllAsync(_cts.Token);

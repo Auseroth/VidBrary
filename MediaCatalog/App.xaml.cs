@@ -41,18 +41,28 @@ public partial class App : Application
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        var dbPath = Path.Combine(DataDirectory, "catalog.db");
-        Directory.CreateDirectory(DataDirectory);
+        // Load settings first so we can read DatabasePath before DI is built
+        var settingsService = new SettingsService();
+        settingsService.LoadAsync().GetAwaiter().GetResult();
+
+        var defaultDbPath = Path.Combine(DataDirectory, "catalog.db");
+        var dbPath = string.IsNullOrWhiteSpace(settingsService.Current.DatabasePath)
+            ? defaultDbPath
+            : settingsService.Current.DatabasePath;
+
+        var dbDir = Path.GetDirectoryName(dbPath)!;
+        Directory.CreateDirectory(DataDirectory); // always ensure log dir exists
+        Directory.CreateDirectory(dbDir);
 
         services.AddDbContext<VidBraryDbContext>(options =>
             options.UseSqlite($"Data Source={dbPath}"));
 
-        services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<ISettingsService>(_ => settingsService);
         services.AddSingleton<INavigationService, NavigationService>();
 
-        services.AddScoped<IScannerService, ScannerService>();
-        services.AddScoped<ITmdbService, TmdbService>();
-        services.AddScoped<IMediaInfoService, MediaInfoService>();
+        services.AddTransient<IScannerService, ScannerService>();
+        services.AddTransient<ITmdbService, TmdbService>();
+        services.AddTransient<IMediaInfoService, MediaInfoService>();
         services.AddSingleton<ScanViewModel>();
 
         // ViewModels

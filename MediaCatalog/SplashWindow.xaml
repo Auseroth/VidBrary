@@ -15,7 +15,7 @@
         </Border.Effect>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <Image Source="/Resources/libDiscPlay3 (2).ico"
-                   Width="72" Height="72"
+                   Width="122" Height="91"
                    HorizontalAlignment="Center"
                    Margin="0,0,0,16"
                    RenderOptions.BitmapScalingMode="HighQuality"/>

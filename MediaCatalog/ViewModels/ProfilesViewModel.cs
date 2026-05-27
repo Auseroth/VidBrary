@@ -1,16 +1,17 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 using VidBrary.Data;
 using VidBrary.Models;
 using VidBrary.Services.Settings;
 using VidBrary.ViewModels.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VidBrary.ViewModels;
 
 public partial class ProfilesViewModel(
-    VidBraryDbContext db,
+    IServiceScopeFactory scopeFactory,
     ISettingsService settingsService) : ViewModelBase
 {
     [ObservableProperty] private ObservableCollection<ProfileItemViewModel> _profiles = [];
@@ -27,6 +28,9 @@ public partial class ProfilesViewModel(
     public async Task LoadAsync()
     {
         IsBusy = true;
+
+        using var scope = scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<VidBraryDbContext>();
 
         var profiles = await db.Profiles.AsNoTracking().ToListAsync();
         var activeId = settingsService.Current.ActiveProfileId;
@@ -74,6 +78,9 @@ public partial class ProfilesViewModel(
             return;
         }
 
+        using var scope = scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<VidBraryDbContext>();
+
         db.Profiles.Add(new UserProfile { Name = NewProfileName.Trim() });
         await db.SaveChangesAsync();
 
@@ -84,7 +91,10 @@ public partial class ProfilesViewModel(
     [RelayCommand]
     private async Task DeleteProfileAsync(ProfileItemViewModel profile)
     {
-        if (profile.IsActive) return; // cannot delete active profile
+        if (profile.IsActive) return;
+
+        using var scope = scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<VidBraryDbContext>();
 
         var entity = await db.Profiles.FindAsync(profile.Id);
         if (entity is null) return;

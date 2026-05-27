@@ -8,6 +8,7 @@ public class NavigationService(IServiceProvider services) : INavigationService
 {
     private Frame? _frame;
     private readonly Stack<(Type ViewModelType, object? Parameter)> _history = new();
+    private IServiceScope? _currentScope;
 
     public event EventHandler? NavigationChanged;
 
@@ -25,8 +26,12 @@ public class NavigationService(IServiceProvider services) : INavigationService
     {
         if (_frame is null) return;
 
-        // Resolve the ViewModel from DI
-        var viewModel = (ViewModelBase)services.GetRequiredService(viewModelType);
+        // Dispose the previous scope — this releases all DbContext instances from the last page
+        _currentScope?.Dispose();
+        _currentScope = services.CreateScope();
+
+        // Resolve the ViewModel from the new scope
+        var viewModel = (ViewModelBase)_currentScope.ServiceProvider.GetRequiredService(viewModelType);
 
         var viewType = ResolveViewType(viewModelType)
             ?? throw new InvalidOperationException(
@@ -54,7 +59,6 @@ public class NavigationService(IServiceProvider services) : INavigationService
         var pageName = viewModelType.Name.Replace("ViewModel", "Page");
         var fullViewName = $"VidBrary.Views.Pages.{pageName}";
 
-        // Search the assembly that contains the views
         return typeof(NavigationService).Assembly.GetType(fullViewName);
     }
 

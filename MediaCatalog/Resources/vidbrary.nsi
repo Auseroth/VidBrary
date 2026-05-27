@@ -34,8 +34,12 @@ LangString MUI_TEXT_FINISH_INFO_REBOOT 1033 "You must restart your computer to c
 LangString MUI_TEXT_FINISH_REBOOTNOW 1033 "Restart Now"
 LangString MUI_TEXT_FINISH_REBOOTLATER 1033 "Restart Later"
 
+
 !insertmacro MUI_PAGE_WELCOME
 Page custom OptionsPageShow OptionsPageLeave
+!define MUI_LICENSEPAGE_CHECKBOX
+!define MUI_LICENSEPAGE_SCROLLTOP
+!insertmacro MUI_PAGE_LICENSE "C:\\temp file transfer\\9.VisualStudio\\field testing\\MediaCatalog\\MediaCatalog\\bin\\Release\\net8.0-windows\\publish\\VidBrary\\Resources\\TERMS_OF_USE.txt"
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_RUN "$INSTDIR\${EXENAME}"
 !define MUI_FINISHPAGE_RUN_TEXT "Run VidBrary"
@@ -60,11 +64,11 @@ Var DESKTOP_CHECKED
 ;--------------------------------
 ; Version Information
 ;--------------------------------
-VIProductVersion "1.0.0.0"
+VIProductVersion "1.2.0.0"
 VIAddVersionKey "CompanyName" "City of Newport News - Public Safety IT"
 VIAddVersionKey "LegalCopyright" "© 2025 City of Newport News"
-VIAddVersionKey "FileVersion" "1.0.0.0"
-VIAddVersionKey "ProductVersion" "1.0.0.0"
+VIAddVersionKey "FileVersion" "1.2.0.0"
+VIAddVersionKey "ProductVersion" "1.2.0.0"
 VIAddVersionKey "Author" "Austin Sharman"
 VIAddVersionKey "FileDescription" "App to launch and monitor any number of apps, designed to be ran as a custom shell app Written By Austin Sharman"
 VIAddVersionKey "InternalName" "${APPNAME}"
@@ -136,7 +140,7 @@ Section "Install"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayIcon" "$INSTDIR\${EXENAME}"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayVersion" "1.2.0.1"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayVersion" "1.3.0.1"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoRepair" 1
 

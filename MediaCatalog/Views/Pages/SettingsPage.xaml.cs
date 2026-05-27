@@ -27,4 +27,5 @@ public partial class SettingsPage : Page
         Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
         e.Handled = true;
     }
+
 }

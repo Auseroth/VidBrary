@@ -5,6 +5,8 @@
     <!-- ══ Converters ══ -->
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility"/>
+    <converters:InverseBoolConverter             x:Key="InverseBool"/>
+    <converters:NullToCollapsedConverter         x:Key="NullToCollapsed"/>
     <converters:BoolToEyeIconConverter           x:Key="BoolToEyeIcon"/>
     <converters:BoolToChevronConverter           x:Key="BoolToChevron"/>
     <converters:StringToVisibilityConverter      x:Key="StringToVisibility"/>

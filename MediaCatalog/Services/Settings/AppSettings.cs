@@ -28,4 +28,11 @@ public class AppSettings
     public string AccentColor { get; set; } = "#D9652B";
     /// <summary>Secondary accent (borders, hover). Default: #0f3460</summary>
     public string SecondaryColor { get; set; } = "#0f3460";
+
+    // ── Database ──────────────────────────────────────────────────────────────
+    /// <summary>
+    /// Override the default DB location. Leave null to use ProgramData\VidBrary\catalog.db.
+    /// Set to a UNC path or mapped drive to share a DB across clients.
+    /// </summary>
+    public string? DatabasePath { get; set; }
 }

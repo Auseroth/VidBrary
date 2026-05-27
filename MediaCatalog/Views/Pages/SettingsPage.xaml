@@ -4,22 +4,17 @@
       Background="#1a1a2e">
 
     <Page.Resources>
-        <!-- Section header style -->
         <Style x:Key="SectionHeader" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#D9652B"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="0,24,0,10"/>
         </Style>
-
-        <!-- Label style -->
         <Style x:Key="FieldLabel" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#adb5bd"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
-
-        <!-- Input style -->
         <Style x:Key="TextInput" TargetType="TextBox">
             <Setter Property="Background" Value="#16213e"/>
             <Setter Property="Foreground" Value="White"/>
@@ -29,16 +24,12 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="CaretBrush" Value="White"/>
         </Style>
-
-        <!-- Directory chip style -->
         <Style x:Key="ChipStyle" TargetType="Border">
             <Setter Property="Background" Value="#0f3460"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="10,6"/>
             <Setter Property="Margin" Value="0,0,8,8"/>
         </Style>
-
-        <!-- Tag chip style -->
         <Style x:Key="ExtChipStyle" TargetType="Border">
             <Setter Property="Background" Value="#16213e"/>
             <Setter Property="BorderBrush" Value="#0f3460"/>
@@ -47,7 +38,6 @@
             <Setter Property="Padding" Value="8,4"/>
             <Setter Property="Margin" Value="0,0,8,8"/>
         </Style>
-
         <Style x:Key="ActionButton" TargetType="Button">
             <Setter Property="Background" Value="#0f3460"/>
             <Setter Property="Foreground" Value="White"/>
@@ -56,18 +46,22 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
-
         <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
             <Setter Property="Background" Value="#D9652B"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
-
         <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#D9652B"/>
             <Setter Property="Padding" Value="4,0"/>
         </Style>
-
+        <Style x:Key="BigDangerButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Background" Value="#c0392b"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="18,10"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
         <Style x:Key="ToggleStyle" TargetType="CheckBox">
             <Setter Property="Foreground" Value="#adb5bd"/>
             <Setter Property="FontSize" Value="13"/>
@@ -81,7 +75,60 @@
             <TextBlock Text="Settings" Foreground="White"
                        FontSize="28" FontWeight="Bold" Margin="0,0,0,4"/>
             <TextBlock Text="Configure directories, metadata, playback and appearance."
-                       Foreground="#6c757d" FontSize="13"/>
+                       Foreground="#6c757d" FontSize="13" Margin="0,0,0,20"/>
+
+            <!-- ══ TOP ACTION BAR ══ -->
+            <Border Background="#16213e" CornerRadius="8" Padding="20,16" Margin="0,0,0,8">
+                <StackPanel>
+                    <TextBlock Text="⚙  DATABASE &amp; APP MANAGEMENT"
+                               Foreground="#D9652B" FontSize="13" FontWeight="SemiBold"
+                               Margin="0,0,0,14"/>
+
+                    <!-- Row 1: Update + Purge + Delete -->
+                    <WrapPanel Margin="0,0,0,12">
+                        <!-- Check for Update -->
+                        <Button Content="🔄  Check for Update"
+                                Style="{StaticResource PrimaryButton}"
+                                Command="{Binding CheckForUpdateCommand}"
+                                IsEnabled="{Binding IsCheckingUpdate, Converter={StaticResource InverseBool}}"
+                                Margin="0,0,12,8"/>
+
+                        <!-- Remove Stale Data -->
+                        <Button Content="🧹  Remove Stale Data"
+                                Style="{StaticResource ActionButton}"
+                                Command="{Binding PurgeStaleDataCommand}"
+                                IsEnabled="{Binding IsDbBusy, Converter={StaticResource InverseBool}}"
+                                Margin="0,0,12,8"
+                                ToolTip="Deletes DB entries whose files no longer exist on disk. Shows/seasons with no remaining episodes are also removed."/>
+
+                        <!-- Delete Database -->
+                        <Button Content="🗑  Delete Database"
+                                Style="{StaticResource BigDangerButton}"
+                                Command="{Binding DeleteDatabaseCommand}"
+                                IsEnabled="{Binding IsDbBusy, Converter={StaticResource InverseBool}}"
+                                Margin="0,0,12,8"
+                                ToolTip="Permanently deletes the catalog.db file. The app must be restarted afterward."/>
+
+                        <!-- ══ SAVE ══ -->
+                        <Button Content="Save Settings"
+                                Style="{StaticResource PrimaryButton}"
+                                Command="{Binding SaveCommand}"
+                                Margin="0,0,0,8" Width="143"/>
+                        <TextBlock Text="{Binding SaveConfirmation}"
+                           Foreground="#4caf50" FontSize="13"/>
+                    </WrapPanel>
+
+
+                    <!-- Status feedback -->
+                    <TextBlock Text="{Binding UpdateStatus}"
+                               Foreground="#4fc3f7" FontSize="12" TextWrapping="Wrap"
+                               Visibility="{Binding UpdateStatus, Converter={StaticResource NullToCollapsed}}"
+                               Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding DbOperationStatus}"
+                               Foreground="#4caf50" FontSize="12" TextWrapping="Wrap"
+                               Visibility="{Binding DbOperationStatus, Converter={StaticResource NullToCollapsed}}"/>
+                </StackPanel>
+            </Border>
 
             <!-- ══ MOVIE DIRECTORIES ══ -->
             <TextBlock Text="🎬  MOVIE DIRECTORIES" Style="{StaticResource SectionHeader}"/>
@@ -160,7 +207,9 @@
 
             <ItemsControl ItemsSource="{Binding AllowedExtensions}" Margin="0,0,0,8">
                 <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -192,6 +241,35 @@
                 <Button Content="+ Add" Style="{StaticResource ActionButton}"
                         Command="{Binding AddExtensionCommand}"/>
             </StackPanel>
+
+            <!-- ══ DATABASE LOCATION ══ -->
+            <TextBlock Text="🗄  DATABASE LOCATION" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Style="{StaticResource FieldLabel}" TextWrapping="Wrap">
+                Override where the catalog database is stored. Leave blank to use the default
+                (<Run Foreground="White">%ProgramData%\VidBrary\catalog.db</Run>).
+                Point to a UNC path or mapped drive so multiple clients can share one database.
+                <LineBreak/><Run Foreground="#e57373">⚠ Changing this requires an app restart to take effect.</Run>
+            </TextBlock>
+
+            <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Style="{StaticResource TextInput}"
+                         Text="{Binding DatabasePath, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Full path to catalog.db, e.g. \\server\share\catalog.db"/>
+                <Button Grid.Column="1" Content="Browse"
+                        Style="{StaticResource ActionButton}"
+                        Command="{Binding BrowseDatabasePathCommand}"
+                        Margin="8,0,0,0"/>
+                <Button Grid.Column="2" Content="✕"
+                        Style="{StaticResource DangerButton}"
+                        Command="{Binding ClearDatabasePathCommand}"
+                        Margin="8,0,0,0"
+                        ToolTip="Reset to default ProgramData location"/>
+            </Grid>
 
             <!-- ══ TMDB API KEY ══ -->
             <TextBlock Text="🔑  TMDB API KEY" Style="{StaticResource SectionHeader}"/>
@@ -269,7 +347,6 @@
             <!-- ══ APPEARANCE ══ -->
             <TextBlock Text="🎨  APPEARANCE" Style="{StaticResource SectionHeader}"/>
 
-            <!-- Theme + View Mode row -->
             <Grid Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -290,7 +367,6 @@
                 </StackPanel>
             </Grid>
 
-            <!-- Custom Colors -->
             <TextBlock Text="Custom Colors" Style="{StaticResource FieldLabel}" Margin="0,8,0,6"/>
             <TextBlock Text="Override any preset color. Use hex values like #1a1a2e. Click Save to apply."
                        Foreground="#6c757d" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,12"/>
@@ -307,7 +383,6 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Background Color -->
                 <StackPanel Grid.Row="0" Grid.Column="0">
                     <TextBlock Text="Background" Style="{StaticResource FieldLabel}"/>
                     <Grid>
@@ -325,7 +400,6 @@
                     </Grid>
                 </StackPanel>
 
-                <!-- Surface Color -->
                 <StackPanel Grid.Row="0" Grid.Column="2">
                     <TextBlock Text="Surface" Style="{StaticResource FieldLabel}"/>
                     <Grid>
@@ -343,7 +417,6 @@
                     </Grid>
                 </StackPanel>
 
-                <!-- Accent Color -->
                 <StackPanel Grid.Row="2" Grid.Column="0">
                     <TextBlock Text="Accent" Style="{StaticResource FieldLabel}"/>
                     <Grid>
@@ -361,7 +434,6 @@
                     </Grid>
                 </StackPanel>
 
-                <!-- Secondary Color -->
                 <StackPanel Grid.Row="2" Grid.Column="2">
                     <TextBlock Text="Secondary" Style="{StaticResource FieldLabel}"/>
                     <Grid>
@@ -385,7 +457,6 @@
                     Command="{Binding ResetColorsCommand}"
                     HorizontalAlignment="Left" Margin="0,4,0,0"/>
 
-            <!-- TV Season Ordering -->
             <Grid Margin="0,16,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -414,6 +485,79 @@
                            Foreground="#4caf50" FontSize="13"
                            VerticalAlignment="Center" Margin="16,0,0,0"/>
             </StackPanel>
+
+            <!-- ══ ABOUT ══ -->
+            <Separator Background="#0f3460" Margin="0,32,0,0"/>
+
+            <Border Background="#16213e" CornerRadius="8" Padding="24,20" Margin="0,16,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: app identity -->
+                    <StackPanel Grid.Column="0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                            <TextBlock Text="VidBrary"
+                                       Foreground="White" FontSize="18" FontWeight="Bold"
+                                       VerticalAlignment="Center"/>
+                            <Border Background="#D9652B" CornerRadius="4"
+                                    Padding="6,2" Margin="10,2,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding AppVersion}"
+                                           Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                            </Border>
+                        </StackPanel>
+
+                        <TextBlock Text="A personal media catalog and library manager."
+                                   Foreground="#adb5bd" FontSize="12" Margin="0,0,0,12"/>
+
+                        <TextBlock Foreground="#6c757d" FontSize="11" Margin="0,0,0,4">
+                            <Run Text="© 2025 Austin Sharman (Auseroth). Released under the"/>
+                            <Hyperlink NavigateUri="https://opensource.org/licenses/MIT"
+                                       RequestNavigate="Hyperlink_RequestNavigate"
+                                       Foreground="#4fc3f7">MIT License</Hyperlink>
+                            <Run Text="."/>
+                        </TextBlock>
+
+                        <TextBlock Foreground="#6c757d" FontSize="11" Margin="0,0,0,4">
+                            <Run Text="Movie and TV metadata provided by"/>
+                            <Hyperlink NavigateUri="https://www.themoviedb.org"
+                                       RequestNavigate="Hyperlink_RequestNavigate"
+                                       Foreground="#4fc3f7">The Movie Database (TMDB)</Hyperlink>
+                            <Run Text="."/>
+                        </TextBlock>
+
+                        <TextBlock Foreground="#6c757d" FontSize="11">
+                            <Run Text="Source code available at"/>
+                            <Hyperlink NavigateUri="https://github.com/Auseroth/VidBrary"
+                                       RequestNavigate="Hyperlink_RequestNavigate"
+                                       Foreground="#4fc3f7">github.com/Auseroth/VidBrary</Hyperlink>
+                            <Run Text="."/>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <!-- Centre: app icon -->
+                    <Image Grid.Column="1"
+                           Source="/Resources/libDiscPlay3 (2).ico"
+                           Height="72"
+                           VerticalAlignment="Center"
+                           Margin="10,0,24,0"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                    <!-- Right: TMDB attribution -->
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <TextBlock Text="TMDB" Foreground="#01b4e4"
+                                   FontSize="22" FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="This product uses the TMDB API"
+                                   Foreground="#6c757d" FontSize="9"
+                                   HorizontalAlignment="Center" TextWrapping="Wrap"
+                                   MaxWidth="100" TextAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
         </StackPanel>
     </ScrollViewer>
