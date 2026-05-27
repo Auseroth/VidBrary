@@ -83,8 +83,8 @@ public partial class MovieDetailViewModel(
         MatchStatus.NoResults         => "#6c757d",
         MatchStatus.AutoMatched       => "#1a73e8",
         MatchStatus.ManualMatched     => "#1a73e8",
-        MatchStatus.PendingSelection  => "#e94560",
-        MatchStatus.ManuallyUnmatched => "#f59e0b",
+        MatchStatus.PendingSelection  => "#e94560",  // red  — unaddressed, needs action
+        MatchStatus.ManuallyUnmatched => "#D9652B",  // orange — user explicitly said no match
         _                             => "#6c757d"
     };
 
@@ -306,12 +306,24 @@ public partial class MovieDetailViewModel(
     private async Task SaveMatchAsync()
     {
         var selected = Candidates.FirstOrDefault(c => c.IsSelected);
+        if (selected is null) return; // nothing selected — use explicit buttons below
+        await tmdb.ApplyMovieMatchAsync(_movieId, selected.Id);
+        ShowMatchDialog = false;
+        await LoadAsync();
+    }
 
-        if (selected is null)
-            await tmdb.ClearMovieMatchAsync(_movieId);
-        else
-            await tmdb.ApplyMovieMatchAsync(_movieId, selected.Id);
+    [RelayCommand]
+    private async Task MarkAsNoMatchAsync()
+    {
+        await tmdb.ClearMovieMatchAsync(_movieId); // sets ManuallyUnmatched (yellow)
+        ShowMatchDialog = false;
+        await LoadAsync();
+    }
 
+    [RelayCommand]
+    private async Task ClearMatchAsync()
+    {
+        await tmdb.ResetMovieToPendingAsync(_movieId); // sets PendingSelection (orange)
         ShowMatchDialog = false;
         await LoadAsync();
     }

@@ -11,6 +11,11 @@ public partial class MainViewModel(
 {
     [ObservableProperty] private bool _canGoBack;
 
+    public void Initialize()
+    {
+        navigationService.NavigationChanged += (_, _) => CanGoBack = navigationService.CanGoBack;
+    }
+
     [RelayCommand] private void NavigateHome()        => navigationService.NavigateTo<HomeViewModel>();
     [RelayCommand] private void NavigateMovies()      => navigationService.NavigateTo<MoviesViewModel>();
     [RelayCommand] private void NavigateTvShows()     => navigationService.NavigateTo<TvShowsViewModel>();

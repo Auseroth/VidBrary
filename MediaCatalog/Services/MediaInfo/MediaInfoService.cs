@@ -21,7 +21,9 @@ public class MediaInfoService(
         {
             cancellationToken.ThrowIfCancellationRequested();
             progress?.Report($"Reading file info: {movie.Title ?? movie.FileName}");
-            ApplyFileInfo(movie.FilePath, out var info);
+
+            var info = await Task.Run(() => ApplyFileInfo(movie.FilePath), cancellationToken);
+
             movie.VideoCodec      = info.VideoCodec;
             movie.VideoResolution = info.VideoResolution;
             movie.AudioCodec      = info.AudioCodec;
@@ -39,7 +41,9 @@ public class MediaInfoService(
         foreach (var ep in episodes)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            ApplyFileInfo(ep.FilePath, out var info);
+
+            var info = await Task.Run(() => ApplyFileInfo(ep.FilePath), cancellationToken);
+
             ep.VideoCodec      = info.VideoCodec;
             ep.VideoResolution = info.VideoResolution;
             ep.AudioCodec      = info.AudioCodec;
@@ -59,7 +63,7 @@ public class MediaInfoService(
         var movie = await db.Movies.FindAsync([movieId], cancellationToken);
         if (movie is null) return;
 
-        ApplyFileInfo(movie.FilePath, out var info);
+        var info = await Task.Run(() => ApplyFileInfo(movie.FilePath), cancellationToken);
         movie.VideoCodec      = info.VideoCodec;
         movie.VideoResolution = info.VideoResolution;
         movie.AudioCodec      = info.AudioCodec;
@@ -76,7 +80,7 @@ public class MediaInfoService(
         var ep = await db.Episodes.FindAsync([episodeId], cancellationToken);
         if (ep is null) return;
 
-        ApplyFileInfo(ep.FilePath, out var info);
+        var info = await Task.Run(() => ApplyFileInfo(ep.FilePath), cancellationToken);
         ep.VideoCodec      = info.VideoCodec;
         ep.VideoResolution = info.VideoResolution;
         ep.AudioCodec      = info.AudioCodec;
@@ -89,14 +93,14 @@ public class MediaInfoService(
 
     // ── Core extraction ───────────────────────────────────────────────────────
 
-    private void ApplyFileInfo(string filePath, out FileMediaInfo result)
+    private FileMediaInfo ApplyFileInfo(string filePath)
     {
-        result = new FileMediaInfo();
+        var result = new FileMediaInfo();
 
         if (!System.IO.File.Exists(filePath))
         {
             logger.LogWarning("MediaInfo: file not found: {Path}", filePath);
-            return;
+            return result;
         }
 
         try
@@ -112,18 +116,14 @@ public class MediaInfoService(
             var audioCount = TryParseInt(mi.Get(StreamKind.Audio, 0, "StreamCount")) ?? 0;
             var audioLangs = Enumerable.Range(0, audioCount)
                 .Select(i => Clean(mi.Get(StreamKind.Audio, i, "Language/String")))
-                .Where(l => !string.IsNullOrEmpty(l))
-                .ToList();
-            result.AudioTracks = audioLangs.Count > 0
-                ? string.Join(", ", audioLangs) : null;
+                .Where(l => !string.IsNullOrEmpty(l)).ToList();
+            result.AudioTracks = audioLangs.Count > 0 ? string.Join(", ", audioLangs) : null;
 
             var subCount = TryParseInt(mi.Get(StreamKind.Text, 0, "StreamCount")) ?? 0;
             var subLangs = Enumerable.Range(0, subCount)
                 .Select(i => Clean(mi.Get(StreamKind.Text, i, "Language/String")))
-                .Where(l => !string.IsNullOrEmpty(l))
-                .ToList();
-            result.SubtitleTracks = subLangs.Count > 0
-                ? string.Join(", ", subLangs) : null;
+                .Where(l => !string.IsNullOrEmpty(l)).ToList();
+            result.SubtitleTracks = subLangs.Count > 0 ? string.Join(", ", subLangs) : null;
 
             mi.Close();
         }
@@ -131,6 +131,8 @@ public class MediaInfoService(
         {
             logger.LogError(ex, "MediaInfo failed for: {Path}", filePath);
         }
+
+        return result;
     }
 
     private static string BuildResolution(MI mi)

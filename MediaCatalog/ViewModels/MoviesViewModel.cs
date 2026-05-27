@@ -135,4 +135,7 @@ public partial class MoviesViewModel(
         SelectedGenre = "All";
         SelectedMatchFilter = "All";
     }
+
+    [RelayCommand]
+    private void ClearMatchFilter() => SelectedMatchFilter = "All";
 }

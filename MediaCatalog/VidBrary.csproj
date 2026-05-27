@@ -10,11 +10,20 @@
     <UseWPF>true</UseWPF>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>NU1605</NoWarn>
-    <ApplicationIcon>libDiscPlay3 (1).ico</ApplicationIcon>
+    <ApplicationIcon>libDiscPlay3 (2).ico</ApplicationIcon>
+	<AssemblyVersion>1.2.0.1</AssemblyVersion>
+	<FileVersion>1.2.0.1</FileVersion>
+	<InformationalVersion>1.2.0+build.1</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="libDiscPlay3 (1).ico" />
+    <None Remove="Resources\libDiscPlay3 %282%29.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="libDiscPlay3 (2).ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -40,9 +49,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resources\playDisc22 %281%29.ico">
+    <Resource Include="Resources\libDiscPlay3 (2).ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="../README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

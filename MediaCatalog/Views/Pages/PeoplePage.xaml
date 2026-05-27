@@ -44,7 +44,7 @@
             <Run Text=" people"/>
         </TextBlock>
         <ProgressBar Grid.Row="1" Height="2" VerticalAlignment="Bottom"
-                     IsIndeterminate="True" Foreground="#e94560"
+                     IsIndeterminate="True" Foreground="#D9652B"
                      Background="Transparent" BorderThickness="0"
                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"/>
 

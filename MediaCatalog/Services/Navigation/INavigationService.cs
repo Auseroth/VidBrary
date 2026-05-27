@@ -9,4 +9,7 @@ public interface INavigationService
     void GoBack();
 
     bool CanGoBack { get; }
+
+    /// <summary>Raised whenever navigation occurs (forward or back).</summary>
+    event EventHandler? NavigationChanged;
 }

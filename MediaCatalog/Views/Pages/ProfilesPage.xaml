@@ -18,7 +18,7 @@
             <TextBlock Grid.Column="0" Text="Profiles"
                        Foreground="White" FontSize="28" FontWeight="Bold"/>
             <Button Grid.Column="1" Content="+ New Profile"
-                    Background="#e94560" Foreground="White"
+                    Background="#D9652B" Foreground="White"
                     BorderThickness="0" Padding="14,8"
                     FontSize="13" Cursor="Hand"
                     Command="{Binding OpenCreateDialogCommand}"/>
@@ -53,7 +53,7 @@
                                     CommandParameter="{Binding}"/>
                             </Border.InputBindings>
                             <StackPanel>
-                                <Ellipse Width="56" Height="56" Fill="#e94560"
+                                <Ellipse Width="56" Height="56" Fill="#D9652B"
                                          HorizontalAlignment="Left" Margin="0,0,0,12"/>
                                 <TextBlock Text="{Binding Name}" Foreground="White"
                                            FontSize="16" FontWeight="SemiBold"/>
@@ -69,7 +69,7 @@
                                 </Border>
                                 <!-- Delete (only non-active profiles) -->
                                 <Button Content="Remove" Background="Transparent"
-                                        Foreground="#e94560" BorderThickness="0"
+                                        Foreground="#D9652B" BorderThickness="0"
                                         Padding="0" Cursor="Hand" FontSize="12"
                                         HorizontalAlignment="Left" Margin="0,10,0,0"
                                         Command="{Binding DataContext.DeleteProfileCommand,
@@ -105,7 +105,7 @@
                             <KeyBinding Key="Return" Command="{Binding CreateProfileCommand}"/>
                         </TextBox.InputBindings>
                     </TextBox>
-                    <TextBlock Text="{Binding CreateError}" Foreground="#e94560"
+                    <TextBlock Text="{Binding CreateError}" Foreground="#D9652B"
                                FontSize="12" Margin="0,6,0,0"
                                Visibility="{Binding CreateError,
                                    Converter={StaticResource StringToVisibility}}"/>
@@ -115,7 +115,7 @@
                                 BorderThickness="0" Foreground="#adb5bd"
                                 Padding="14,8" Cursor="Hand" Margin="0,0,8,0"
                                 Command="{Binding CloseCreateDialogCommand}"/>
-                        <Button Content="Create" Background="#e94560"
+                        <Button Content="Create" Background="#D9652B"
                                 BorderThickness="0" Foreground="White"
                                 Padding="14,8" Cursor="Hand" FontWeight="SemiBold"
                                 Command="{Binding CreateProfileCommand}"/>

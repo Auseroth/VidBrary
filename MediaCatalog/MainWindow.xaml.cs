@@ -25,6 +25,7 @@ public partial class MainWindow : Window
         var nav = App.Services.GetRequiredService<INavigationService>() as NavigationService;
         nav?.SetFrame(MainFrame);
 
+        MainViewModel.Initialize();
         MainViewModel.NavigateHomeCommand.Execute(null);
     }
 

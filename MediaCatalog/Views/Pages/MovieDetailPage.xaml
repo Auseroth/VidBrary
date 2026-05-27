@@ -34,7 +34,7 @@
     <Grid>
         <!-- ══ Busy overlay ══ -->
         <ProgressBar VerticalAlignment="Top" Height="3" IsIndeterminate="True"
-                     Foreground="#e94560" Background="Transparent" BorderThickness="0"
+                     Foreground="#D9652B" Background="Transparent" BorderThickness="0"
                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"
                      Panel.ZIndex="10"/>
 
@@ -132,7 +132,7 @@
 
                         <!-- Tags (above action buttons) -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                            <TextBlock Text="Tags" Foreground="#e94560"
+                            <TextBlock Text="Tags" Foreground="#D9652B"
                                        FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             <Button Content="+" Background="Transparent" BorderThickness="0"
                                     Foreground="#adb5bd" Cursor="Hand" Padding="8,0"
@@ -193,7 +193,7 @@
 
                             <!-- Play -->
                             <Button Style="{StaticResource DetailButton}"
-                                    Background="#e94560" Content="▶  Play Now"
+                                    Background="#D9652B" Content="▶  Play Now"
                                     Command="{Binding PlayCommand}"
                                     Margin="0,0,12,0"/>
 
@@ -212,7 +212,7 @@
                         </StackPanel>
 
                         <!-- Overview -->
-                        <TextBlock Text="Overview" Foreground="#e94560"
+                        <TextBlock Text="Overview" Foreground="#D9652B"
                                    FontSize="13" FontWeight="SemiBold" Margin="0,0,0,8"/>
                         <TextBlock Text="{Binding Overview}" Foreground="#adb5bd"
                                    FontSize="14" TextWrapping="Wrap" LineHeight="22"
@@ -231,7 +231,7 @@
                         </StackPanel>
 
                         <!-- Cast -->
-                        <TextBlock Text="Cast" Foreground="#e94560"
+                        <TextBlock Text="Cast" Foreground="#D9652B"
                                    FontSize="13" FontWeight="SemiBold" Margin="0,0,0,12"
                                    Visibility="{Binding Cast.Count, Converter={StaticResource NonZeroToVisibility}}"/>
                         <ScrollViewer HorizontalScrollBarVisibility="Auto"
@@ -441,19 +441,30 @@
                     </ScrollViewer>
                     <Border Grid.Row="2" Background="#0d0d1a" CornerRadius="0,0,12,12" Padding="20,14">
                         <Grid>
-                            <Button Content="Clear Match" HorizontalAlignment="Left"
-                                    Background="Transparent" BorderThickness="1"
-                                    BorderBrush="#6c757d" Foreground="#adb5bd"
-                                    Padding="14,8" Cursor="Hand"
-                                    Command="{Binding SaveMatchCommand}"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Content="Cancel" Background="Transparent"
-                                        BorderThickness="0" Foreground="#adb5bd"
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Button Content="Clear Match"
+                                        Background="Transparent" BorderThickness="1"
+                                        BorderBrush="#D9652B" Foreground="#D9652B"
                                         Padding="14,8" Cursor="Hand" Margin="0,0,8,0"
+                                        ToolTip="Reset to Pending — still needs a match selected"
+                                        Command="{Binding ClearMatchCommand}"/>
+                                <Button Content="No Match"
+                                        Background="Transparent" BorderThickness="1"
+                                        BorderBrush="#f59e0b" Foreground="#f59e0b"
+                                        Padding="14,8" Cursor="Hand"
+                                        ToolTip="Mark as intentionally unmatched"
+                                        Command="{Binding MarkAsNoMatchCommand}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="Cancel"
+                                        Background="Transparent" BorderThickness="0"
+                                        Foreground="#adb5bd" Padding="14,8" Cursor="Hand"
+                                        Margin="0,0,8,0"
                                         Command="{Binding CloseMatchDialogCommand}"/>
-                                <Button Content="Save Match" Background="#1a73e8"
-                                        BorderThickness="0" Foreground="White"
-                                        Padding="14,8" Cursor="Hand" FontWeight="SemiBold"
+                                <Button Content="Save Match"
+                                        Background="#1a73e8" BorderThickness="0"
+                                        Foreground="White" Padding="14,8" Cursor="Hand"
+                                        FontWeight="SemiBold"
                                         Command="{Binding SaveMatchCommand}"/>
                             </StackPanel>
                         </Grid>

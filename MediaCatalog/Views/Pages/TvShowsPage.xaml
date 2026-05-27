@@ -63,6 +63,12 @@
                 <ComboBox ItemsSource="{Binding MatchFilters}"
                           SelectedItem="{Binding SelectedMatchFilter}"
                           MinWidth="130"/>
+                <Button Content="✕" Background="Transparent" BorderThickness="0"
+                        Foreground="#6c757d" Cursor="Hand" Padding="4,0"
+                        ToolTip="Clear match filter"
+                        Command="{Binding ClearMatchFilterCommand}"
+                        Visibility="{Binding SelectedMatchFilter,
+                            Converter={StaticResource StringToVisibility}}"/>
                 <TextBlock Text="Sort" Style="{StaticResource FilterLabel}"/>
                 <ComboBox ItemsSource="{Binding SortOptions}"
                           SelectedItem="{Binding SelectedSort}"
@@ -82,7 +88,7 @@
             <Run Text=" shows"/>
         </TextBlock>
         <ProgressBar Grid.Row="2" Height="2" VerticalAlignment="Bottom"
-                     IsIndeterminate="True" Foreground="#e94560"
+                     IsIndeterminate="True" Foreground="#D9652B"
                      Background="Transparent" BorderThickness="0"
                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"/>
 

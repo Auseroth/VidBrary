@@ -157,7 +157,7 @@
                                 Command="{Binding CreateCollectionCommand}"/>
                         </TextBox.InputBindings>
                     </TextBox>
-                    <TextBlock Text="{Binding CreateError}" Foreground="#e94560"
+                    <TextBlock Text="{Binding CreateError}" Foreground="#D9652B"
                                FontSize="12" Margin="0,6,0,0"
                                Visibility="{Binding CreateError,
                                    Converter={StaticResource StringToVisibility}}"/>

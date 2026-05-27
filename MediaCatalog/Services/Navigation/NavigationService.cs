@@ -9,6 +9,8 @@ public class NavigationService(IServiceProvider services) : INavigationService
     private Frame? _frame;
     private readonly Stack<(Type ViewModelType, object? Parameter)> _history = new();
 
+    public event EventHandler? NavigationChanged;
+
     /// <summary>Must be called once from MainWindow with the host Frame.</summary>
     public void SetFrame(Frame frame) => _frame = frame;
 
@@ -37,7 +39,14 @@ public class NavigationService(IServiceProvider services) : INavigationService
         _frame.Navigate(page);
         _history.Push((viewModelType, parameter));
 
-        _ = viewModel.OnNavigatedToAsync(parameter);
+        _ = viewModel.OnNavigatedToAsync(parameter)
+                     .ContinueWith(t =>
+                     {
+                         if (t.IsFaulted)
+                             System.Diagnostics.Debug.WriteLine(
+                                 $"Navigation load failed: {t.Exception?.GetBaseException().Message}");
+                     }, TaskScheduler.Default);
+        NavigationChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private static Type? ResolveViewType(Type viewModelType)

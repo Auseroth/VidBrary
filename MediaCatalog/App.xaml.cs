@@ -76,6 +76,9 @@ public partial class App : Application
 
     protected override async void OnStartup(StartupEventArgs e)
     {
+        var splash = new SplashWindow();
+        splash.Show();
+
         await _host.StartAsync();
         Services = _host.Services;
 
@@ -104,6 +107,8 @@ public partial class App : Application
             _ = Services.GetRequiredService<ScanViewModel>().ScanCommand.ExecuteAsync(null);
 
         var mainWindow = Services.GetRequiredService<MainWindow>();
+
+        splash.Close();
         mainWindow.Show();
 
         base.OnStartup(e);

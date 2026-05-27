@@ -14,7 +14,7 @@
     <!-- ══ Theme brushes — mutated at runtime by ThemeService ══ -->
     <SolidColorBrush x:Key="AppBrushBg"        Color="#1a1a2e"/>
     <SolidColorBrush x:Key="AppBrushSurface"   Color="#16213e"/>
-    <SolidColorBrush x:Key="AppBrushAccent"    Color="#e94560"/>
+    <SolidColorBrush x:Key="AppBrushAccent"    Color="#D9652B"/>
     <SolidColorBrush x:Key="AppBrushSecondary" Color="#0f3460"/>
     <SolidColorBrush x:Key="AppBrushText"      Color="White"/>
     <SolidColorBrush x:Key="AppBrushTextMuted" Color="#adb5bd"/>

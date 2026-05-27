@@ -28,10 +28,15 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="VidBrary"
-                           Foreground="White" FontSize="14" FontWeight="SemiBold"
-                           VerticalAlignment="Center" Margin="16,0,0,0"
-                           IsHitTestVisible="False"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center"
+                            Margin="12,0,0,0" IsHitTestVisible="False">
+                    <Image Source="/Resources/libDiscPlay3 (2).ico"
+                           Width="20" Height="20" Margin="0,0,8,0"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock Text="VidBrary"
+                               Foreground="White" FontSize="14" FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button Content="─" Width="46" Height="40"
                             Background="Transparent" Foreground="#adb5bd"
@@ -56,7 +61,7 @@
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#e94560"/>
+                                        <Setter Property="Background" Value="#D9652B"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
                                 </Style.Triggers>
@@ -88,7 +93,7 @@
                                     Command="{Binding MainViewModel.NavigateProfilesCommand}"/>
                             </Border.InputBindings>
                             <StackPanel Orientation="Horizontal">
-                                <Ellipse Width="28" Height="28" Fill="#e94560" Margin="0,0,8,0"/>
+                                <Ellipse Width="28" Height="28" Fill="#D9652B" Margin="0,0,8,0"/>
                                 <StackPanel VerticalAlignment="Center">
                                     <TextBlock Text="{Binding ProfilesViewModel.ActiveProfile.Name,
                                                    FallbackValue='Default'}"
@@ -159,7 +164,7 @@
                            Foreground="#6c757d" FontSize="12" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <ProgressBar Width="120" Height="4" Margin="0,0,12,0"
-                                 IsIndeterminate="True" Foreground="#e94560"
+                                 IsIndeterminate="True" Foreground="#D9652B"
                                  Background="Transparent" BorderThickness="0"
                                  Visibility="{Binding ScanViewModel.IsScanning,
                                      Converter={StaticResource BoolToVisibility}}"/>

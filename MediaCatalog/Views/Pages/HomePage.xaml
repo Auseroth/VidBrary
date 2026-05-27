@@ -35,7 +35,7 @@
                             BorderThickness="0" Padding="14,8"
                             FontSize="13" Cursor="Hand" Margin="0,0,10,0"
                             Command="{Binding PickRandomShowCommand}"/>
-                    <Button Background="#e94560" Foreground="White"
+                    <Button Background="#D9652B" Foreground="White"
                             BorderThickness="0" Padding="14,8"
                             FontSize="13" Cursor="Hand"
                             Command="{Binding ScanViewModel.ScanCommand}">
@@ -54,7 +54,7 @@
             </Grid>
 
             <ProgressBar Height="3" IsIndeterminate="True"
-                         Foreground="#e94560" Background="Transparent"
+                         Foreground="#D9652B" Background="Transparent"
                          BorderThickness="0" Margin="0,0,0,24"
                          Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"/>
 
@@ -117,6 +117,88 @@
                     </StackPanel>
                 </Border>
             </WrapPanel>
+            <Border Background="#16213e" CornerRadius="10" Padding="20"
+                    Visibility="{Binding ShowRandomMovie, Converter={StaticResource BoolToVisibility}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" CornerRadius="6" Height="110" ClipToBounds="True">
+                        <Grid>
+                            <Rectangle Fill="#0f3460"/>
+                            <Image Stretch="UniformToFill" Source="{Binding RandomMovie.PosterPath}"/>
+                        </Grid>
+                    </Border>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <TextBlock Text="🎲 Tonight's Pick — Movie" Foreground="#D9652B"
+                                   FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding RandomMovie.Title}" Foreground="White"
+                                   FontSize="18" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <TextBlock Text="{Binding RandomMovie.YearDisplay}" Foreground="#6c757d" FontSize="13"/>
+                            <TextBlock Text=" · " Foreground="#6c757d" FontSize="13"/>
+                            <TextBlock Text="{Binding RandomMovie.RuntimeDisplay}" Foreground="#6c757d" FontSize="13"/>
+                            <TextBlock Text=" · " Foreground="#6c757d" FontSize="13"/>
+                            <TextBlock Text="{Binding RandomMovie.RatingDisplay}" Foreground="#f59e0b" FontSize="13"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" VerticalAlignment="Center">
+                        <Button Content="▶ Play" Background="#D9652B" Foreground="White"
+                                BorderThickness="0" Padding="16,10" FontSize="13"
+                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,0,8"
+                                Command="{Binding OpenMovieCommand}"
+                                CommandParameter="{Binding RandomMovie}"/>
+                        <Button Content="🔀 Pick Again" Background="Transparent"
+                                Foreground="#adb5bd" BorderThickness="0"
+                                Padding="0,4" FontSize="12" Cursor="Hand"
+                                HorizontalAlignment="Center"
+                                Command="{Binding PickRandomMovieCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="#16213e" CornerRadius="10" Padding="20"
+                    Visibility="{Binding ShowRandomShow, Converter={StaticResource BoolToVisibility}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" CornerRadius="6" Height="110" ClipToBounds="True">
+                        <Grid>
+                            <Rectangle Fill="#0f3460"/>
+                            <Image Stretch="UniformToFill" Source="{Binding RandomShow.PosterPath}"/>
+                        </Grid>
+                    </Border>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <TextBlock Text="🎲 Tonight's Pick — TV Show" Foreground="#D9652B"
+                                   FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding RandomShow.Title}" Foreground="White"
+                                   FontSize="18" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <TextBlock Text="{Binding RandomShow.YearDisplay}" Foreground="#6c757d" FontSize="13"/>
+                            <TextBlock Text=" · " Foreground="#6c757d" FontSize="13"/>
+                            <TextBlock Text="{Binding RandomShow.RatingDisplay}" Foreground="#f59e0b" FontSize="13"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" VerticalAlignment="Center">
+                        <Button Content="▶ Browse" Background="#0f3460" Foreground="White"
+                                BorderThickness="0" Padding="16,10" FontSize="13"
+                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,0,8"
+                                Command="{Binding OpenShowCommand}"
+                                CommandParameter="{Binding RandomShow}"/>
+                        <Button Content="🔀 Pick Again" Background="Transparent"
+                                Foreground="#adb5bd" BorderThickness="0"
+                                Padding="0,4" FontSize="12" Cursor="Hand"
+                                HorizontalAlignment="Center"
+                                Command="{Binding PickRandomShowCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
             <!-- ══ Continue Watching ══ -->
             <StackPanel Margin="0,0,0,32"
@@ -126,7 +208,9 @@
                 <ScrollViewer Style="{StaticResource HorizontalStrip}">
                     <ItemsControl ItemsSource="{Binding ContinueWatching}">
                         <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -184,7 +268,9 @@
                 <ScrollViewer Style="{StaticResource HorizontalStrip}">
                     <ItemsControl ItemsSource="{Binding MyListSpotlight}">
                         <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -220,92 +306,8 @@
             </StackPanel>
 
             <!-- ══ Random Movie card ══ -->
-            <Border Background="#16213e" CornerRadius="10" Padding="20"
-                    Margin="0,0,0,16"
-                    Visibility="{Binding ShowRandomMovie, Converter={StaticResource BoolToVisibility}}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" CornerRadius="6" Height="110" ClipToBounds="True">
-                        <Grid>
-                            <Rectangle Fill="#0f3460"/>
-                            <Image Stretch="UniformToFill" Source="{Binding RandomMovie.PosterPath}"/>
-                        </Grid>
-                    </Border>
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                        <TextBlock Text="🎲 Tonight's Pick — Movie" Foreground="#e94560"
-                                   FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6"/>
-                        <TextBlock Text="{Binding RandomMovie.Title}" Foreground="White"
-                                   FontSize="18" FontWeight="Bold"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            <TextBlock Text="{Binding RandomMovie.YearDisplay}" Foreground="#6c757d" FontSize="13"/>
-                            <TextBlock Text=" · " Foreground="#6c757d" FontSize="13"/>
-                            <TextBlock Text="{Binding RandomMovie.RuntimeDisplay}" Foreground="#6c757d" FontSize="13"/>
-                            <TextBlock Text=" · " Foreground="#6c757d" FontSize="13"/>
-                            <TextBlock Text="{Binding RandomMovie.RatingDisplay}" Foreground="#f59e0b" FontSize="13"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Grid.Column="3" VerticalAlignment="Center">
-                        <Button Content="▶ Play" Background="#e94560" Foreground="White"
-                                BorderThickness="0" Padding="16,10" FontSize="13"
-                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,0,8"
-                                Command="{Binding OpenMovieCommand}"
-                                CommandParameter="{Binding RandomMovie}"/>
-                        <Button Content="🔀 Pick Again" Background="Transparent"
-                                Foreground="#adb5bd" BorderThickness="0"
-                                Padding="0,4" FontSize="12" Cursor="Hand"
-                                HorizontalAlignment="Center"
-                                Command="{Binding PickRandomMovieCommand}"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
 
             <!-- ══ Random Show card ══ -->
-            <Border Background="#16213e" CornerRadius="10" Padding="20"
-                    Margin="0,0,0,32"
-                    Visibility="{Binding ShowRandomShow, Converter={StaticResource BoolToVisibility}}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" CornerRadius="6" Height="110" ClipToBounds="True">
-                        <Grid>
-                            <Rectangle Fill="#0f3460"/>
-                            <Image Stretch="UniformToFill" Source="{Binding RandomShow.PosterPath}"/>
-                        </Grid>
-                    </Border>
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                        <TextBlock Text="🎲 Tonight's Pick — TV Show" Foreground="#e94560"
-                                   FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6"/>
-                        <TextBlock Text="{Binding RandomShow.Title}" Foreground="White"
-                                   FontSize="18" FontWeight="Bold"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            <TextBlock Text="{Binding RandomShow.YearDisplay}" Foreground="#6c757d" FontSize="13"/>
-                            <TextBlock Text=" · " Foreground="#6c757d" FontSize="13"/>
-                            <TextBlock Text="{Binding RandomShow.RatingDisplay}" Foreground="#f59e0b" FontSize="13"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Grid.Column="3" VerticalAlignment="Center">
-                        <Button Content="▶ Browse" Background="#0f3460" Foreground="White"
-                                BorderThickness="0" Padding="16,10" FontSize="13"
-                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,0,8"
-                                Command="{Binding OpenShowCommand}"
-                                CommandParameter="{Binding RandomShow}"/>
-                        <Button Content="🔀 Pick Again" Background="Transparent"
-                                Foreground="#adb5bd" BorderThickness="0"
-                                Padding="0,4" FontSize="12" Cursor="Hand"
-                                HorizontalAlignment="Center"
-                                Command="{Binding PickRandomShowCommand}"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
 
             <!-- ══ Recently Added Movies ══ -->
             <StackPanel Margin="0,0,0,32"
@@ -321,7 +323,9 @@
                 <ScrollViewer Style="{StaticResource HorizontalStrip}">
                     <ItemsControl ItemsSource="{Binding RecentMovies}">
                         <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -374,7 +378,9 @@
                 <ScrollViewer Style="{StaticResource HorizontalStrip}">
                     <ItemsControl ItemsSource="{Binding RecentShows}">
                         <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

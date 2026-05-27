@@ -5,7 +5,7 @@
 
     <Grid>
         <ProgressBar VerticalAlignment="Top" Height="3" IsIndeterminate="True"
-                     Foreground="#e94560" Background="Transparent" BorderThickness="0"
+                     Foreground="#D9652B" Background="Transparent" BorderThickness="0"
                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"
                      Panel.ZIndex="10"/>
 
@@ -57,7 +57,7 @@
                     <StackPanel Margin="0,0,0,32"
                                 Visibility="{Binding Biography,
                                     Converter={StaticResource StringToVisibility}}">
-                        <TextBlock Text="Biography" Foreground="#e94560"
+                        <TextBlock Text="Biography" Foreground="#D9652B"
                                    FontSize="13" FontWeight="SemiBold" Margin="0,0,0,8"/>
                         <TextBlock Text="{Binding Biography}" Foreground="#adb5bd"
                                    FontSize="14" TextWrapping="Wrap" LineHeight="22"/>
@@ -67,7 +67,7 @@
                     <StackPanel Margin="0,0,0,32"
                                 Visibility="{Binding MovieCredits.Count,
                                     Converter={StaticResource NonZeroToVisibility}}">
-                        <TextBlock Text="Movies in Your Library" Foreground="#e94560"
+                        <TextBlock Text="Movies in Your Library" Foreground="#D9652B"
                                    FontSize="13" FontWeight="SemiBold" Margin="0,0,0,12"/>
                         <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Disabled">
@@ -121,7 +121,7 @@
                     <!-- TV Shows -->
                     <StackPanel Visibility="{Binding ShowCredits.Count,
                                     Converter={StaticResource NonZeroToVisibility}}">
-                        <TextBlock Text="TV Shows in Your Library" Foreground="#e94560"
+                        <TextBlock Text="TV Shows in Your Library" Foreground="#D9652B"
                                    FontSize="13" FontWeight="SemiBold" Margin="0,0,0,12"/>
                         <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Disabled">

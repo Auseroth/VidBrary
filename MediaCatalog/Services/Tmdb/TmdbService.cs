@@ -548,4 +548,30 @@ public class TmdbService(
 
     private static string? BuildImageUrl(string? path, string size) =>
         string.IsNullOrWhiteSpace(path) ? null : $"{ImageBase}{size}{path}";
+    
+    public async Task ResetMovieToPendingAsync(int movieId)
+    {
+        var movie = await db.Movies.FindAsync(movieId)
+            ?? throw new ArgumentException($"Movie {movieId} not found");
+
+        movie.TmdbId = null;
+        movie.MatchStatus = movie.TmdbCandidateCount > 0
+            ? MatchStatus.PendingSelection
+            : MatchStatus.NoResults;
+
+        await db.SaveChangesAsync();
+    }
+
+    public async Task ResetShowToPendingAsync(int tvShowId)
+    {
+        var show = await db.TvShows.FindAsync(tvShowId)
+            ?? throw new ArgumentException($"TvShow {tvShowId} not found");
+
+        show.TmdbId = null;
+        show.MatchStatus = show.TmdbCandidateCount > 0
+            ? MatchStatus.PendingSelection
+            : MatchStatus.NoResults;
+
+        await db.SaveChangesAsync();
+    }
 }

@@ -15,7 +15,7 @@
                    Margin="32,28,32,16"/>
 
         <ProgressBar Grid.Row="0" Height="2" VerticalAlignment="Bottom"
-                     IsIndeterminate="True" Foreground="#e94560"
+                     IsIndeterminate="True" Foreground="#D9652B"
                      Background="Transparent" BorderThickness="0"
                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"/>
 

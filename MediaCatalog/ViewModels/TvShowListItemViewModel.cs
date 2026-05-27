@@ -45,8 +45,8 @@ public partial class TvShowListItemViewModel : ObservableObject
         MatchStatus.NoResults         => "#6c757d",
         MatchStatus.AutoMatched       => "#1a73e8",
         MatchStatus.ManualMatched     => "#1a73e8",
-        MatchStatus.PendingSelection  => "#e94560",
-        MatchStatus.ManuallyUnmatched => "#f59e0b",
+        MatchStatus.PendingSelection  => "#e94560",  // red
+        MatchStatus.ManuallyUnmatched => "#D9652B",  // orange
         _                             => "#6c757d"
     };
 

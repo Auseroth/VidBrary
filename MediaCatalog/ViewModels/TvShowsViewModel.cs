@@ -142,4 +142,7 @@ public partial class TvShowsViewModel(
         SelectedStatus = "All";
         SelectedMatchFilter = "All";
     }
+
+    [RelayCommand]
+    private void ClearMatchFilter() => SelectedMatchFilter = "All";
 }

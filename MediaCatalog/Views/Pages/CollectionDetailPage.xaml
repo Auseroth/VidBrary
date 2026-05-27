@@ -5,7 +5,7 @@
 
     <Grid>
         <ProgressBar VerticalAlignment="Top" Height="3" IsIndeterminate="True"
-                     Foreground="#e94560" Background="Transparent" BorderThickness="0"
+                     Foreground="#D9652B" Background="Transparent" BorderThickness="0"
                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"
                      Panel.ZIndex="10"/>
 

@@ -24,8 +24,8 @@ public class AppSettings
     public string BackgroundColor { get; set; } = "#1a1a2e";
     /// <summary>Sidebar and card surface. Default: #16213e</summary>
     public string SurfaceColor { get; set; } = "#16213e";
-    /// <summary>Primary accent (buttons, highlights). Default: #e94560</summary>
-    public string AccentColor { get; set; } = "#e94560";
+    /// <summary>Primary accent (buttons, highlights). Default: #D9652B</summary>
+    public string AccentColor { get; set; } = "#D9652B";
     /// <summary>Secondary accent (borders, hover). Default: #0f3460</summary>
     public string SecondaryColor { get; set; } = "#0f3460";
 }

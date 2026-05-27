@@ -20,7 +20,7 @@ public partial class TagsViewModel(VidBraryDbContext db) : ViewModelBase
 
     public IReadOnlyList<string> PresetColors { get; } =
     [
-        "#e94560", "#1a73e8", "#7c3aed", "#0f9d58",
+        "#D9652B", "#1a73e8", "#7c3aed", "#0f9d58",
         "#f59e0b", "#0f3460", "#6c757d", "#16213e"
     ];
 

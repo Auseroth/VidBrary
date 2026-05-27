@@ -19,11 +19,11 @@ public static class ThemeService
 
     private static readonly (string Bg, string Surface, string Accent, string Secondary,
                               string Text, string TextMuted) DarkPalette
-        = ("#1a1a2e", "#16213e", "#e94560", "#0f3460", "#ffffff", "#adb5bd");
+        = ("#1a1a2e", "#16213e", "#D9652B", "#0f3460", "#ffffff", "#adb5bd");
 
     private static readonly (string Bg, string Surface, string Accent, string Secondary,
                               string Text, string TextMuted) LightPalette
-        = ("#f5f7fa", "#ffffff", "#e94560", "#1a73e8", "#1a1a2e", "#495057");
+        = ("#f5f7fa", "#ffffff", "#D9652B", "#1a73e8", "#1a1a2e", "#495057");
 
     // ── Public entry-point ────────────────────────────────────────────────────
 

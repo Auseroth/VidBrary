@@ -29,4 +29,10 @@ public interface ITmdbService
 
     /// <summary>Clear the confirmed match for a TV show, leaving candidates intact.</summary>
     Task ClearShowMatchAsync(int tvShowId);
+
+    /// <summary>Reset a movie back to PendingSelection (undo "No Match").</summary>
+    Task ResetMovieToPendingAsync(int movieId);
+
+    /// <summary>Reset a TV show back to PendingSelection (undo "No Match").</summary>
+    Task ResetShowToPendingAsync(int tvShowId);
 }

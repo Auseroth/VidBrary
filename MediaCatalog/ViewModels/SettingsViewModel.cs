@@ -43,7 +43,7 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
     // ── Custom colors ─────────────────────────────────────────────────────────
     [ObservableProperty] private string _backgroundColor = "#1a1a2e";
     [ObservableProperty] private string _surfaceColor    = "#16213e";
-    [ObservableProperty] private string _accentColor     = "#e94560";
+    [ObservableProperty] private string _accentColor     = "#D9652B";
     [ObservableProperty] private string _secondaryColor  = "#0f3460";
 
     // ── TV Season Ordering ────────────────────────────────────────────────────
@@ -175,8 +175,8 @@ public partial class SettingsViewModel(ISettingsService settingsService) : ViewM
         // Reset to theme defaults by clearing overrides
         var defaults = SelectedTheme switch
         {
-            AppTheme.Light => ("#f5f7fa", "#ffffff", "#e94560", "#1a73e8"),
-            _              => ("#1a1a2e", "#16213e", "#e94560", "#0f3460")
+            AppTheme.Light => ("#f5f7fa", "#ffffff", "#D9652B", "#1a73e8"),
+            _              => ("#1a1a2e", "#16213e", "#D9652B", "#0f3460")
         };
         (BackgroundColor, SurfaceColor, AccentColor, SecondaryColor) = defaults;
     }
