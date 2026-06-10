@@ -63,6 +63,7 @@ Function LicensePageShow
 FunctionEnd
 
 Outfile "C:\\temp file transfer\\9.VisualStudio\\exe wrapper scripts\\NSIS Output\\${APPNAME}_Install.exe"
+Outfile "C:\\temp file transfer\\9.VisualStudio\\field testing\\mediacatalog\\${APPNAME}_Install.exe"
 InstallDir "${INSTALLDIR}"
 
 RequestExecutionLevel admin
