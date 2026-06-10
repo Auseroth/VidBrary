@@ -154,14 +154,14 @@ Var DESKTOP_CHECKED
 ; Version Information
 ;--------------------------------
 VIProductVersion "1.2.0.0"
-VIAddVersionKey "CompanyName" "City of Newport News - Public Safety IT"
-VIAddVersionKey "LegalCopyright" "© 2025 City of Newport News"
+VIAddVersionKey "CompanyName" "Austin Sharman"
+VIAddVersionKey "LegalCopyright" "Copyright (c) 2026 Austin Sharman. All rights reserved."
 VIAddVersionKey "FileVersion" "1.2.0.0"
 VIAddVersionKey "ProductVersion" "1.2.0.0"
 VIAddVersionKey "Author" "Austin Sharman"
 VIAddVersionKey "FileDescription" "App to launch and monitor any number of apps, designed to be ran as a custom shell app Written By Austin Sharman"
 VIAddVersionKey "InternalName" "${APPNAME}"
-VIAddVersionKey "Trademarks" "City of Newport News"
+
 
 ;--------------------------------
 ; Installer Icon
